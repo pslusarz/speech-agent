@@ -1,0 +1,50 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# VSCode
+.vscode/
+
+# Claude Code
+.claude/settings.json
+.claude/settings.local.json
+
+# Logs
+logs/
+*.log
+
+# fasthtml session signing key
+.sesskey
+
+# langgraph dev's local store
+.langgraph_api/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ENV/
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Kokoro audio generated at runtime
+audio_cache/
