@@ -47,6 +47,7 @@ from .player.book import Book
 from .player.player import Player
 from .player.tools import SP, person_did, status_line, tools
 from .player.tts import Kokoro
+from .player.voice import Voice
 
 STATIC = Path(__file__).parent / "static"
 LOG_FILE = Path(os.getenv("LOG_FILE", Path(__file__).resolve().parents[2] / "logs" / "speech-agent.log"))
@@ -73,10 +74,10 @@ def log_steps(trace: Trace):
     """Every step the debugger keeps goes to the log too: entries, events, model calls."""
     add = trace.add
 
-    def _add(kind, title, body="", said=None):
+    def _add(kind, title, body="", said=None, call=0):
         text = body if len(body) <= LOG_BODY else body[:LOG_BODY] + f"... ({len(body)} chars)"
         logging.getLogger("speech.agent").info("%s: %s\n%s", kind, title, text)
-        return add(kind, title, body, said=said)
+        return add(kind, title, body, said=said, call=call)
 
     trace.add = _add
     return trace
@@ -91,6 +92,7 @@ main.container { max-width:none; }
 .bubble { max-width:40rem; padding:.55rem .85rem; border-radius:1rem; white-space:pre-wrap; }
 .user .bubble { background:#1f6feb; color:#fff; border-bottom-right-radius:.25rem; }
 .agent .bubble { background:#f1f3f5; color:#111; border-bottom-left-radius:.25rem; }
+.agent.speaking .bubble { border-right:2px solid #8250df; }
 form { display:flex; gap:.5rem; }
 input[name=msg] { flex:1; padding:.55rem .75rem; }
 #controls { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
@@ -103,7 +105,8 @@ input[name=msg] { flex:1; padding:.55rem .75rem; }
 .debug pre { font-size:.72rem; white-space:pre-wrap; max-height:40vh; overflow:auto; }
 """
 
-# the agent speaks without being asked, so the transcript is pushed to the page
+# the person's lines are pushed as they are kept. The agent's lines are drawn from its
+# voice, a word at a time as it is heard (player.js), so nothing unspoken is shown
 STREAM = """
 const chat = new EventSource('/events?after=' + AFTER);
 chat.addEventListener('said', m => document.getElementById('transcript')
@@ -111,9 +114,9 @@ chat.addEventListener('said', m => document.getElementById('transcript')
 """
 
 
-def bubble(said):
+def bubble(said, call: int = 0):
     who, text = said
-    return Div(Span(text, cls="bubble"), cls=f"row {who}")
+    return Div(Span(text, cls="bubble"), cls=f"row {who}", data_call=call or None)
 
 
 def chapter_html(c) -> str:
@@ -128,7 +131,7 @@ def chapter_html(c) -> str:
     return "".join(out)
 
 
-def make_app(agent: Agent, player: Player, trace: Trace):
+def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
     # fasthtml serves any path ending in a static extension from static_path itself,
     # ahead of every route, so /static/player.js is src/main/static/player.js
     app, rt = fast_app(pico=True, hdrs=(Style(CSS),), static_path=str(STATIC.parent))
@@ -139,7 +142,8 @@ def make_app(agent: Agent, player: Player, trace: Trace):
 
     @rt("/")
     def index():
-        said = [s.said for s in trace.steps[: trace.version] if s.said]
+        # what was said, as kept: a reply cut off shows only what was heard of it
+        said = agent.transcript()
         controls = Div(
             Select(
                 *[Option(f"{c.id}. {c.title}", value=c.id) for c in book.chapters],
@@ -149,6 +153,7 @@ def make_app(agent: Agent, player: Player, trace: Trace):
             Button("Play chapter", hx_post="/player/play", hx_include="#chapter", hx_swap="none"),
             Button("Pause", hx_post="/player/pause", hx_swap="none", cls="secondary"),
             Button("Resume", hx_post="/player/resume", hx_swap="none", cls="secondary"),
+            Button("Stop speaking", hx_post="/voice/stop", hx_swap="none", cls="contrast"),
             id="controls",
         )
         return Titled(
@@ -178,6 +183,7 @@ def make_app(agent: Agent, player: Player, trace: Trace):
                         controls,
                         P("", id="player-note"),
                         Audio(id="audio", preload="auto"),
+                        Audio(id="voice", preload="auto"),
                         Div(P("Pick a chapter and press play, or ask the agent to read."), id="text"),
                     ),
                     id="view",
@@ -196,7 +202,7 @@ def make_app(agent: Agent, player: Player, trace: Trace):
             while True:
                 now = await asyncio.to_thread(trace.wait, seen)
                 for s in trace.steps[seen:now]:
-                    if s.said:
+                    if s.said and s.said[0] == "user":
                         yield f"id: {s.n}\n" + sse_message(bubble(s.said), "said")
                 seen = now
 
@@ -208,13 +214,56 @@ def make_app(agent: Agent, player: Player, trace: Trace):
             view = agent.render() if agent.log else []
         return dump(view)
 
+    def cut_in():
+        """The person spoke over the agent: stop its voice and its writing, and tell it
+        what of its replies they did not hear."""
+        unheard = voice.stop()
+        if agent.busy:
+            agent.interrupt()
+        noted = False
+        for call, (heard, rest) in unheard.items():
+            # the reply being written when they cut in was kept as heard, with its note
+            if call == agent.last_cut or not rest.strip():
+                continue
+            # what was never spoken was never said: it goes from the history too
+            agent.truncate(call, heard)
+            if not noted:
+                agent.notify(
+                    "The person cut you off while you were speaking. They heard your reply "
+                    f"up to {heard[-80:]!r}; the rest was never said, so it has been taken "
+                    f"out of what you said. It went on: {rest.strip()[:200]!r}"
+                )
+                noted = True
+        if unheard:
+            log.info("person cut in: %s", {c: (len(h), len(r)) for c, (h, r) in unheard.items()})
+
     @rt("/say")
     def say(msg: str = ""):
         if msg.strip():
-            log.info("person said: %r (player %s)", msg.strip(), player.state)
+            log.info("person said: %r (player %s, voice busy %s, agent busy %s)",
+                     msg.strip(), player.state, voice.busy, agent.busy)
+            cut_in()
             player.heard_message()
             agent.post(msg.strip())
         return ""
+
+    @rt("/voice/stop", methods=["post"])
+    def voice_stop():
+        log.info("person pressed stop speaking")
+        cut_in()
+        return ""
+
+    @rt("/voice/report", methods=["post"])
+    def voice_report(id: int, t: float, playing: bool = False, ended: bool = False):
+        voice.report(id, max(0.0, t), playing, ended)
+        return ""
+
+    @rt("/voice/{id}")
+    def voice_audio(id: int):
+        part = voice.part(id)
+        if part is None:
+            return Response("gone", status_code=404)
+        return Response(part.wav, media_type="audio/wav")
 
     @rt("/player/events")
     async def player_events():
@@ -290,7 +339,9 @@ def make_app(agent: Agent, player: Player, trace: Trace):
 
 setup_logging()
 log.info("starting: loading the book and Kokoro; log at %s", LOG_FILE)
-player = Player(Book.load(), Kokoro())
+engine = Kokoro()
+player = Player(Book.load(), engine)
+voice = Voice(player, engine)
 trace = log_steps(Trace())
 agent = trace.attach(
     Agent(
@@ -299,9 +350,16 @@ agent = trace.attach(
         maxtok=1024,
         client=trace.client(raw_client()),
         notices=[lambda: status_line(player)],
+        on_text=[voice.text],
+        on_end=[voice.end],
+        heard=voice.heard,
+        on_idle=[player.release],
     )
 )
-app = make_app(agent, player, trace)
+# a held play or resume waits for the voice to finish and the agent's turn to end, so
+# words written after it in the same turn cannot pause the book it has just started
+player.hold = lambda: voice.busy or agent.busy
+app = make_app(agent, player, trace, voice)
 log.info("ready")
 
 if __name__ == "__main__":

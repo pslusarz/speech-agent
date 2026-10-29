@@ -19,12 +19,18 @@ SP = (
     "returns the passage just heard, and book_read and book_find look up any part of "
     "the book.\n"
     "When the person asks you something while the player is playing, call player_pause "
-    "first, then answer. Once you have answered, call player_resume unless they asked "
-    "you to stay paused or are still talking it over with you; it goes back to the "
-    "sentence they were hearing when they spoke. Keep answers short and plain: the "
-    "person is in the middle of listening.\n"
+    "first, then answer. Do not resume the reading on your own: call player_resume only "
+    "when the person asks you to carry on. It goes back to the sentence they were "
+    "hearing when they spoke. Keep answers short and plain: the person is in the "
+    "middle of listening.\n"
     "Positions in the book are character offsets within a chapter. They are bookkeeping "
-    "between you and the tools: never quote one to the person."
+    "between you and the tools: never quote one to the person.\n"
+    "What you write is spoken aloud as you write it, in a voice of your own, so write "
+    "for the ear: plain sentences, no lists, headings or markdown. The person may cut "
+    "in while you speak; if they do, you will be told what they did not hear. While you "
+    "are speaking the book waits, and a play or resume you ask for happens once you "
+    "have finished. So once you have started or resumed the reading, say nothing more "
+    "unless asked: anything you say keeps the book waiting."
 )
 
 # enough for a passage or two, not for a chapter
@@ -59,6 +65,11 @@ def status_line(player: Player) -> str | None:
         f"{st['ready']} of audio prepared ahead.",
         f"Sentence being heard: {st['sentence']!r}",
     ]
+    if "held" in st:
+        lines.append(
+            f"Your {st['held']} is waiting until you have finished speaking, and will "
+            "happen then unless the person cuts in."
+        )
     if "mark" in st:
         lines.append(
             f"When the person last spoke, they were hearing: {st['mark_sentence']!r} "

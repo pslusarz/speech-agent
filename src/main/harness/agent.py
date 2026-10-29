@@ -109,6 +109,8 @@ class Entry:
     aside: bool = False
     # for a reply: the last entry the model had been shown when it wrote it
     saw: int = 0
+    # for a reply: the model call it came from, so a page can swap its draft for it
+    call: int = 0
     at: float = field(default_factory=time.time)
 
     @property
@@ -174,6 +176,10 @@ class Agent:
         timeout_cap: float = 60.0,
         client=None,
         notices=(),
+        on_text=(),
+        on_end=(),
+        heard=None,
+        on_idle=(),
     ):
         self.cli = client if client is not None else raw_client()
         self.model = model
@@ -185,6 +191,21 @@ class Agent:
         self.tools = {t.name: t for t in tools}
         # more current state shown before every model call, built fresh and never stored
         self.notices = list(notices)
+        # told each piece of text as the model writes it: (model call, text)
+        self.on_text = list(on_text)
+        # told when a model call has finished writing: (model call, what is kept of it
+        # if it was interrupted, else None)
+        self.on_end = list(on_end)
+        # how much of a call's text the person took in before they cut it off; all of
+        # it by default, since they read it as it was written
+        self.heard = heard or (lambda call, text: text)
+        # told each time the loop has finished with an event and no turn is running
+        self.on_idle = list(on_idle)
+        self._calls_made = count(1)
+        self._busy = False
+        self._interrupting = threading.Event()
+        # the model call the last interruption cut short
+        self.last_cut = 0
         self.schemas = [
             t.schema if t.synchronous else with_timeout(t.schema) for t in tools
         ]
@@ -214,6 +235,45 @@ class Agent:
         e.question = e.id
         self.events.put(Event("user", e.id))
         return e
+
+    def interrupt(self, timeout: float = 10.0) -> bool:
+        """The person cut in: stop the turn under way, keeping what they took in of it.
+
+        Returns once the turn has stopped and anything kept of it is in the transcript,
+        so a message posted next comes after it, or False if no turn was running.
+        """
+        with self._cv:
+            if not self._busy:
+                return False
+            # the loop thread leaves the stream at its next event. Closing the stream
+            # from here instead leaves that thread blocked in its read for good
+            self._interrupting.set()
+        with self._cv:
+            stopped = self._cv.wait_for(lambda: not self._busy, timeout)
+        if not stopped:
+            log.warning("the turn did not stop within %ss of being interrupted", timeout)
+        return stopped
+
+    def truncate(self, call: int, heard: str) -> bool:
+        """Cut a stored reply back to what the person heard of it.
+
+        Its tool calls stay, since they ran; if nothing is left at all, the entry is
+        emptied and the model is no longer shown it.
+        """
+        with self._cv:
+            e = next((e for e in self.log if e.role == "assistant" and e.call == call), None)
+            if e is None or e.text == heard.rstrip():
+                return False
+            kept = heard.rstrip()
+            uses = [b for b in e.content if b["type"] != "text"]
+            e.content = ([dict(type="text", text=kept)] if kept else []) + uses
+            log.info("cut stored reply #%d (call %d) to %d chars", e.id, call, len(kept))
+            self._cv.notify_all()
+            return True
+
+    @property
+    def busy(self) -> bool:
+        return self._busy
 
     def notify(self, text: str) -> Entry:
         """Tell the agent something happened, without asking it to take a turn."""
@@ -335,6 +395,9 @@ class Agent:
         with self._cv:
             msgs: list[dict] = []
             for e in self.log:
+                # a reply the person cut off before any of it was heard
+                if not e.content:
+                    continue
                 blocks = copy.deepcopy(e.content)
                 if msgs and msgs[-1]["role"] == e.role:
                     msgs[-1]["content"] += blocks
@@ -361,6 +424,10 @@ class Agent:
 
     def _run(self):
         while (ev := self.events.get()) is not STOP:
+            with self._cv:
+                self._busy = True
+                # a cut-in meant for an earlier turn is not this one's to honour
+                self._interrupting.clear()
             try:
                 if ev.kind == "user":
                     self._take_turn(ev.mid, trigger="user")
@@ -374,22 +441,54 @@ class Agent:
                 log.exception("event loop failed on %s", ev)
                 self.errors.append(e)
             with self._cv:
+                self._busy = False
                 self._cv.notify_all()
+            for f in self.on_idle:
+                try:
+                    f()
+                except Exception as e:
+                    log.exception("an idle hook failed")
+                    self.errors.append(e)
 
-    def _call(self) -> tuple:
-        """Ask the model, and say how far into the transcript it could see."""
+    def _call(self, trigger: str = "user") -> tuple:
+        """Ask the model, streaming, and say how far into the transcript it could see.
+
+        Text is passed to on_text as it arrives, except in a turn the timer asked for,
+        whose words are the agent's own business until it decides otherwise. If the
+        person cuts in, the stream is left at its next event, whatever kind, and the
+        message is None; the text written until then comes back instead.
+        """
         with self._cv:
             saw = self.log[-1].id
             messages = self.render()
+        n = next(self._calls_made)
         kw = dict(tools=self.schemas) if self.schemas else {}
-        r = self.cli.messages.create(
-            model=self.model,
-            max_tokens=self.maxtok,
-            system=self.sp,
-            messages=messages,
-            **kw,
-        )
-        return r, saw
+        written: list[str] = []
+        r = None
+        try:
+            with self.cli.messages.stream(
+                model=self.model,
+                max_tokens=self.maxtok,
+                system=self.sp,
+                messages=messages,
+                **kw,
+            ) as stream:
+                for event in stream:
+                    if self._interrupting.is_set():
+                        break
+                    if event.type != "content_block_delta" or event.delta.type != "text_delta":
+                        continue
+                    written.append(event.delta.text)
+                    if trigger != "overdue":
+                        for f in self.on_text:
+                            f(n, event.delta.text)
+                else:
+                    r = stream.get_final_message()
+        except Exception:
+            # the connection dropping as it is left is no failure of the turn
+            if not self._interrupting.is_set():
+                raise
+        return r, saw, n, "".join(written)
 
     def _heard(self) -> int:
         """How far the agent had read when it last spoke to the person."""
@@ -413,7 +512,14 @@ class Agent:
                 return
         self._gave_up = False
         for _ in range(MAX_STEPS):
-            r, saw = self._call()
+            if self._interrupting.is_set():
+                return
+            r, saw, n, written = self._call(trigger)
+            if r is None:
+                self._cut(question, saw, n, written)
+                return
+            for f in self.on_end:
+                f(n, None)
             content = [
                 b.model_dump(include={"type", "text", "id", "name", "input"})
                 for b in r.content
@@ -434,6 +540,7 @@ class Agent:
                         and not self._gave_up
                         and not self._unheard(saw),
                         saw=saw,
+                        call=n,
                     )
                 if not uses:
                     return
@@ -454,6 +561,27 @@ class Agent:
                 return
             # otherwise every result is read on the next step: a look, a kill, a
             # refusal, or a start the person has not been told about yet
+
+    def _cut(self, question: int, saw: int, n: int, written: str):
+        """Keep what the person took in of a reply they cut off, and nothing else.
+
+        A tool call the model had begun is dropped with the rest: its input was never
+        finished, and nothing was run for it.
+        """
+        self.last_cut = n
+        kept = self.heard(n, written).rstrip()
+        log.info("interrupted call %d: wrote %d chars, kept %d", n, len(written), len(kept))
+        for f in self.on_end:
+            f(n, kept)
+        with self._cv:
+            if kept:
+                self._append("assistant", kept, question=question, saw=saw, call=n)
+            lost = written[len(kept):].strip() if written.startswith(kept) else written.strip()
+            if lost:
+                self.notify(
+                    "The person cut you off there. They did not take in the rest of "
+                    f"what you were writing: {quote(lost)}"
+                )
 
     def _use(self, u, question: int, batch: int) -> str:
         tool = self.tools.get(u.name)

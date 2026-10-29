@@ -92,6 +92,10 @@ class Player:
         # where the person was in the text when they last spoke over the reading
         self.mark: int | None = None
         self.last_by: str | None = None
+        # while this says so, a play or resume the agent asks for waits, and no audio is
+        # made for the book: the agent's own voice is speaking
+        self.hold = lambda: False
+        self.pending: tuple | None = None
         self.events: list[dict] = []
         self.errors: list[Exception] = []
         self._ids = count(1)
@@ -147,6 +151,12 @@ class Player:
         c = self.book[chapter]
         start = c.sentence_at(offset)[0]
         with self._cv:
+            if by == "agent" and self.hold():
+                self.pending = ("play", chapter, start)
+                log.info("play of chapter %d at %d held until the voice is done", chapter, start)
+                self._emit("held", action="play", start=start)
+                return start
+            self.pending = None
             self.session += 1
             self.chapter = chapter
             self.segments = []
@@ -180,6 +190,12 @@ class Player:
                 raise ValueError("nothing has been played yet")
             target = offset if offset is not None else (self.mark if self.mark is not None else self.offset())
             start = self.book[self.chapter].sentence_at(target)[0]
+            if by == "agent" and self.hold():
+                self.pending = ("resume", start)
+                log.info("resume at %d held until the voice is done", start)
+                self._emit("held", action="resume", start=start)
+                return start
+            self.pending = None
             i = next(
                 (k for k, s in enumerate(self.segments) if s.start <= start < s.end), None
             )
@@ -194,6 +210,22 @@ class Player:
             self._emit("play", index=i, t=self._pos[1], by=by)
             self._cv.notify_all()
             return start
+
+    def release(self, cancel: bool = False):
+        """Carry out the play or resume held, unless cancelled, once nothing holds it."""
+        with self._cv:
+            if self.pending is None or (not cancel and self.hold()):
+                return
+            held, self.pending = self.pending, None
+            if cancel:
+                log.info("dropped the held %s: the person cut in", held[0])
+                self._emit("released", action=held[0], cancelled=True)
+                return
+            log.info("carrying out the held %s", held[0])
+            if held[0] == "play":
+                self.play(held[1], held[2])
+            else:
+                self.resume(held[1])
 
     def heard_message(self):
         """The person spoke while it read: remember where, so resume() can go back there."""
@@ -282,6 +314,8 @@ class Player:
             if self.mark is not None:
                 m0, m1 = c.sentence_at(self.mark)
                 out.update(mark=self.mark, mark_sentence=c.text[m0:m1])
+            if self.pending is not None:
+                out.update(held=self.pending[0])
             return out
 
     def tail(self, chars: int = TAIL_CHARS) -> str:
@@ -322,6 +356,7 @@ class Player:
             return (
                 self.state in (PLAYING, PAUSED)
                 and self.next_offset is not None
+                and not self.hold()
                 and self.ready_ahead() < self.refill_at
             )
 

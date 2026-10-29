@@ -92,6 +92,60 @@ function highlight() {
 }
 requestAnimationFrame(highlight);
 
+// the agent's voice: its parts play in turn, and the server is told where, often,
+// since that is what decides how much of a reply the person heard when they cut in
+const VOICE_REPORT_MS = 250;
+const voiceEl = document.getElementById('voice');
+let vq = [], vcur = null;
+// the agent's line in the chat grows with its voice, so nothing unspoken is shown
+const spoken = {};
+function lineFor(call) {
+  if (!spoken[call]) {
+    const el = document.createElement('div');
+    el.className = 'row agent speaking';
+    el.innerHTML = '<span class="bubble"></span>';
+    document.getElementById('transcript').append(el);
+    spoken[call] = {el, done: ''};
+  }
+  return spoken[call];
+}
+function showSpoken() {
+  requestAnimationFrame(showSpoken);
+  if (!vcur) return;
+  const line = lineFor(vcur.call), t = voiceEl.currentTime;
+  let end = 0;
+  for (const w of vcur.words) { if (w[2] <= t) end = w[1]; else break; }
+  const text = line.done + vcur.text.slice(0, end);
+  if (line.el.firstChild.textContent !== text) line.el.firstChild.textContent = text;
+}
+requestAnimationFrame(showSpoken);
+
+function vplay() {
+  if (vcur || !vq.length) return;
+  vcur = vq.shift();
+  lineFor(vcur.call);
+  voiceEl.src = '/voice/' + vcur.id;
+  voiceEl.play().catch(err => {
+    log('voice-play-refused', {id: vcur.id, name: err.name, message: err.message});
+    setStatus('Press anywhere on the page to let the agent speak.');
+  });
+}
+function vreport(ended) {
+  if (vcur) post('/voice/report', {id: vcur.id, t: voiceEl.currentTime, playing: voiceEl.paused ? 0 : 1, ended: ended ? 1 : 0});
+}
+voiceEl.addEventListener('playing', () => vreport(false));
+voiceEl.addEventListener('ended', () => {
+  vreport(true);
+  const line = lineFor(vcur.call);
+  line.done += vcur.text;
+  line.el.firstChild.textContent = line.done;
+  vcur = null;
+  vplay();
+});
+for (const ev of ['play', 'pause', 'ended', 'waiting', 'error'])
+  voiceEl.addEventListener(ev, () => log('voice-' + ev, {id: vcur && vcur.id, at: +voiceEl.currentTime.toFixed(2)}));
+setInterval(() => { if (vcur && !voiceEl.paused) vreport(false); }, VOICE_REPORT_MS);
+
 const handlers = {
   sync(e) {
     session = e.session; segs = []; last = e.last;
@@ -113,6 +167,12 @@ const handlers = {
   pause() { wanted = null; audio.pause(); report(); },
   play(e) { start(e.index, e.t); },
   finished() { setStatus('Finished the chapter.'); },
+  'voice-part'(e) { vq.push(e); vplay(); },
+  'voice-stop'() {
+    voiceEl.pause(); vq = []; vcur = null;
+    for (const l of Object.values(spoken)) l.el.classList.remove('speaking');
+  },
+  'voice-done'() { for (const l of Object.values(spoken)) l.el.classList.remove('speaking'); },
   error(e) { setStatus('The player failed: ' + e.message); },
 };
 
@@ -122,7 +182,9 @@ es.addEventListener('error', () => log('stream-error', {state: es.readyState}));
 es.addEventListener('player', m => {
   const e = JSON.parse(m.data);
   const {words, segments, ...brief} = e;
-  if (e.kind !== 'sync' && e.session !== session && e.kind !== 'session') {
+  // the voice is not tied to a reading, so its events are not filtered by session
+  const own = /^(voice-|held|released)/.test(e.kind);
+  if (!own && e.kind !== 'sync' && e.session !== session && e.kind !== 'session') {
     log('server-event-ignored', brief);
     return;
   }
