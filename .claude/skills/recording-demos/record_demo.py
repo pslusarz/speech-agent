@@ -1,7 +1,7 @@
 """Record the README demo: read, cut in by voice, answer, carry on. Makes docs/demo.gif.
 
     DEMO=1 LOG_FILE=logs/demo.log uv run uvicorn main.app:app --port 8001 &
-    uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py
+    uv run --with playwright --with imageio-ffmpeg python .claude/skills/recording-demos/record_demo.py
 
 Headless Chromium drives the app in demo mode (scripted replies, real Kokoro and
 Parakeet). Its microphone is replaced by a question spoken by Kokoro, so no one's
@@ -15,7 +15,8 @@ import tempfile
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+# this file lives in .claude/skills/recording-demos/
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
 
 URL = "http://127.0.0.1:8001"
@@ -48,7 +49,7 @@ c.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%
   'padding:10px 18px;border-radius:10px;max-width:1100px;text-align:center;z-index:99';
 document.body.append(c);
 const hide = document.createElement('style');
-hide.textContent = '#voice-samples, .debug, #speak-note { display:none !important }';
+hide.textContent = '.debug, #speak-note { display:none !important }';
 document.head.append(hide);
 """
 

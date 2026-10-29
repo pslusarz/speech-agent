@@ -23,6 +23,38 @@ REPO = os.getenv("ASR_REPO", "csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-i
 FILES = ("encoder.int8.onnx", "decoder.int8.onnx", "joiner.int8.onnx", "tokens.txt")
 RATE = 16000
 THREADS = int(os.getenv("ASR_THREADS", 4))
+# long enough for a question asked mid-reading, short enough to bound an upload
+MAX_SECONDS = 30.0
+MIN_SECONDS = 0.3
+MAX_BYTES = int(RATE * 2 * MAX_SECONDS) + 1024
+
+
+class Refused(ValueError):
+    """Audio we cannot use; the message says why."""
+
+
+def check(data: bytes) -> float:
+    """The length in seconds of 16 kHz mono 16-bit speech, or Refused with the reason."""
+    if len(data) > MAX_BYTES:
+        raise Refused(f"too long: at most {MAX_SECONDS:g} seconds")
+    try:
+        with wave.open(io.BytesIO(data)) as w:
+            channels, width, rate, frames = (
+                w.getnchannels(), w.getsampwidth(), w.getframerate(), w.getnframes()
+            )
+    except (wave.Error, EOFError) as e:
+        raise Refused(f"not a WAV file: {e}") from e
+    if (channels, width, rate) != (1, 2, RATE):
+        raise Refused(
+            f"expected 16 kHz mono 16-bit audio, got {rate} Hz, {channels} channel(s), "
+            f"{width * 8}-bit"
+        )
+    seconds = frames / RATE
+    if seconds < MIN_SECONDS:
+        raise Refused("too short to be speech")
+    if seconds > MAX_SECONDS:
+        raise Refused(f"too long: at most {MAX_SECONDS:g} seconds")
+    return seconds
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,1565 @@
+{
+ "title": "Thus Spake Zarathustra",
+ "subtitle": "A Book for All and None",
+ "author": "Friedrich Nietzsche",
+ "translator": "Thomas Common",
+ "note": "The Prologue and the first seven discourses of the First Part, in Thomas Common's 1909 translation, which is in the public domain. The whole book, in the same shape, is in https://github.com/pslusarz/books-zarathustra (data/book.json); set BOOK_PATH to it to read further.",
+ "chapters": [
+  {
+   "id": 0,
+   "part": 0,
+   "number": null,
+   "title": "Zarathustra’s Prologue",
+   "blocks": [
+    {
+     "type": "section",
+     "text": "1"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra was thirty years old, he left his home and the lake of his home, and went into the mountains. There he enjoyed his spirit and solitude, and for ten years did not weary of it. But at last his heart changed,—and rising one morning with the rosy dawn, he went before the sun, and spake thus unto it:"
+    },
+    {
+     "type": "p",
+     "text": "Thou great star! What would be thy happiness if thou hadst not those for whom thou shinest!"
+    },
+    {
+     "type": "p",
+     "text": "For ten years hast thou climbed hither unto my cave: thou wouldst have wearied of thy light and of the journey, had it not been for me, mine eagle, and my serpent."
+    },
+    {
+     "type": "p",
+     "text": "But we awaited thee every morning, took from thee thine overflow and blessed thee for it."
+    },
+    {
+     "type": "p",
+     "text": "Lo! I am weary of my wisdom, like the bee that hath gathered too much honey; I need hands outstretched to take it."
+    },
+    {
+     "type": "p",
+     "text": "I would fain bestow and distribute, until the wise have once more become joyous in their folly, and the poor happy in their riches."
+    },
+    {
+     "type": "p",
+     "text": "Therefore must I descend into the deep: as thou doest in the evening, when thou goest behind the sea, and givest light also to the nether-world, thou exuberant star!"
+    },
+    {
+     "type": "p",
+     "text": "Like thee must I GO DOWN, as men say, to whom I shall descend."
+    },
+    {
+     "type": "p",
+     "text": "Bless me, then, thou tranquil eye, that canst behold even the greatest happiness without envy!"
+    },
+    {
+     "type": "p",
+     "text": "Bless the cup that is about to overflow, that the water may flow golden out of it, and carry everywhere the reflection of thy bliss!"
+    },
+    {
+     "type": "p",
+     "text": "Lo! This cup is again going to empty itself, and Zarathustra is again going to be a man."
+    },
+    {
+     "type": "p",
+     "text": "Thus began Zarathustra’s down-going."
+    },
+    {
+     "type": "section",
+     "text": "2"
+    },
+    {
+     "type": "p",
+     "text": "Zarathustra went down the mountain alone, no one meeting him. When he entered the forest, however, there suddenly stood before him an old man, who had left his holy cot to seek roots. And thus spake the old man to Zarathustra:"
+    },
+    {
+     "type": "p",
+     "text": "“No stranger to me is this wanderer: many years ago passed he by. Zarathustra he was called; but he hath altered."
+    },
+    {
+     "type": "p",
+     "text": "Then thou carriedst thine ashes into the mountains: wilt thou now carry thy fire into the valleys? Fearest thou not the incendiary’s doom?"
+    },
+    {
+     "type": "p",
+     "text": "Yea, I recognise Zarathustra. Pure is his eye, and no loathing lurketh about his mouth. Goeth he not along like a dancer?"
+    },
+    {
+     "type": "p",
+     "text": "Altered is Zarathustra; a child hath Zarathustra become; an awakened one is Zarathustra: what wilt thou do in the land of the sleepers?"
+    },
+    {
+     "type": "p",
+     "text": "As in the sea hast thou lived in solitude, and it hath borne thee up. Alas, wilt thou now go ashore? Alas, wilt thou again drag thy body thyself?”"
+    },
+    {
+     "type": "p",
+     "text": "Zarathustra answered: “I love mankind.”"
+    },
+    {
+     "type": "p",
+     "text": "“Why,” said the saint, “did I go into the forest and the desert? Was it not because I loved men far too well?"
+    },
+    {
+     "type": "p",
+     "text": "Now I love God: men, I do not love. Man is a thing too imperfect for me. Love to man would be fatal to me.”"
+    },
+    {
+     "type": "p",
+     "text": "Zarathustra answered: “What spake I of love! I am bringing gifts unto men.”"
+    },
+    {
+     "type": "p",
+     "text": "“Give them nothing,” said the saint. “Take rather part of their load, and carry it along with them—that will be most agreeable unto them: if only it be agreeable unto thee!"
+    },
+    {
+     "type": "p",
+     "text": "If, however, thou wilt give unto them, give them no more than an alms, and let them also beg for it!”"
+    },
+    {
+     "type": "p",
+     "text": "“No,” replied Zarathustra, “I give no alms. I am not poor enough for that.”"
+    },
+    {
+     "type": "p",
+     "text": "The saint laughed at Zarathustra, and spake thus: “Then see to it that they accept thy treasures! They are distrustful of anchorites, and do not believe that we come with gifts."
+    },
+    {
+     "type": "p",
+     "text": "The fall of our footsteps ringeth too hollow through their streets. And just as at night, when they are in bed and hear a man abroad long before sunrise, so they ask themselves concerning us: Where goeth the thief?"
+    },
+    {
+     "type": "p",
+     "text": "Go not to men, but stay in the forest! Go rather to the animals! Why not be like me—a bear amongst bears, a bird amongst birds?”"
+    },
+    {
+     "type": "p",
+     "text": "“And what doeth the saint in the forest?” asked Zarathustra."
+    },
+    {
+     "type": "p",
+     "text": "The saint answered: “I make hymns and sing them; and in making hymns I laugh and weep and mumble: thus do I praise God."
+    },
+    {
+     "type": "p",
+     "text": "With singing, weeping, laughing, and mumbling do I praise the God who is my God. But what dost thou bring us as a gift?”"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra had heard these words, he bowed to the saint and said: “What should I have to give thee! Let me rather hurry hence lest I take aught away from thee!”—And thus they parted from one another, the old man and Zarathustra, laughing like schoolboys."
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra was alone, however, he said to his heart: “Could it be possible! This old saint in the forest hath not yet heard of it, that GOD IS DEAD!”"
+    },
+    {
+     "type": "section",
+     "text": "3"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra arrived at the nearest town which adjoineth the forest, he found many people assembled in the market-place; for it had been announced that a rope-dancer would give a performance. And Zarathustra spake thus unto the people:"
+    },
+    {
+     "type": "p",
+     "text": "I TEACH YOU THE SUPERMAN. Man is something that is to be surpassed. What have ye done to surpass man?"
+    },
+    {
+     "type": "p",
+     "text": "All beings hitherto have created something beyond themselves: and ye want to be the ebb of that great tide, and would rather go back to the beast than surpass man?"
+    },
+    {
+     "type": "p",
+     "text": "What is the ape to man? A laughing-stock, a thing of shame. And just the same shall man be to the Superman: a laughing-stock, a thing of shame."
+    },
+    {
+     "type": "p",
+     "text": "Ye have made your way from the worm to man, and much within you is still worm. Once were ye apes, and even yet man is more of an ape than any of the apes."
+    },
+    {
+     "type": "p",
+     "text": "Even the wisest among you is only a disharmony and hybrid of plant and phantom. But do I bid you become phantoms or plants?"
+    },
+    {
+     "type": "p",
+     "text": "Lo, I teach you the Superman!"
+    },
+    {
+     "type": "p",
+     "text": "The Superman is the meaning of the earth. Let your will say: The Superman SHALL BE the meaning of the earth!"
+    },
+    {
+     "type": "p",
+     "text": "I conjure you, my brethren, REMAIN TRUE TO THE EARTH, and believe not those who speak unto you of superearthly hopes! Poisoners are they, whether they know it or not."
+    },
+    {
+     "type": "p",
+     "text": "Despisers of life are they, decaying ones and poisoned ones themselves, of whom the earth is weary: so away with them!"
+    },
+    {
+     "type": "p",
+     "text": "Once blasphemy against God was the greatest blasphemy; but God died, and therewith also those blasphemers. To blaspheme the earth is now the dreadfulest sin, and to rate the heart of the unknowable higher than the meaning of the earth!"
+    },
+    {
+     "type": "p",
+     "text": "Once the soul looked contemptuously on the body, and then that contempt was the supreme thing:—the soul wished the body meagre, ghastly, and famished. Thus it thought to escape from the body and the earth."
+    },
+    {
+     "type": "p",
+     "text": "Oh, that soul was itself meagre, ghastly, and famished; and cruelty was the delight of that soul!"
+    },
+    {
+     "type": "p",
+     "text": "But ye, also, my brethren, tell me: What doth your body say about your soul? Is your soul not poverty and pollution and wretched self-complacency?"
+    },
+    {
+     "type": "p",
+     "text": "Verily, a polluted stream is man. One must be a sea, to receive a polluted stream without becoming impure."
+    },
+    {
+     "type": "p",
+     "text": "Lo, I teach you the Superman: he is that sea; in him can your great contempt be submerged."
+    },
+    {
+     "type": "p",
+     "text": "What is the greatest thing ye can experience? It is the hour of great contempt. The hour in which even your happiness becometh loathsome unto you, and so also your reason and virtue."
+    },
+    {
+     "type": "p",
+     "text": "The hour when ye say: “What good is my happiness! It is poverty and pollution and wretched self-complacency. But my happiness should justify existence itself!”"
+    },
+    {
+     "type": "p",
+     "text": "The hour when ye say: “What good is my reason! Doth it long for knowledge as the lion for his food? It is poverty and pollution and wretched self-complacency!”"
+    },
+    {
+     "type": "p",
+     "text": "The hour when ye say: “What good is my virtue! As yet it hath not made me passionate. How weary I am of my good and my bad! It is all poverty and pollution and wretched self-complacency!”"
+    },
+    {
+     "type": "p",
+     "text": "The hour when ye say: “What good is my justice! I do not see that I am fervour and fuel. The just, however, are fervour and fuel!”"
+    },
+    {
+     "type": "p",
+     "text": "The hour when ye say: “What good is my pity! Is not pity the cross on which he is nailed who loveth man? But my pity is not a crucifixion.”"
+    },
+    {
+     "type": "p",
+     "text": "Have ye ever spoken thus? Have ye ever cried thus? Ah! would that I had heard you crying thus!"
+    },
+    {
+     "type": "p",
+     "text": "It is not your sin—it is your self-satisfaction that crieth unto heaven; your very sparingness in sin crieth unto heaven!"
+    },
+    {
+     "type": "p",
+     "text": "Where is the lightning to lick you with its tongue? Where is the frenzy with which ye should be inoculated?"
+    },
+    {
+     "type": "p",
+     "text": "Lo, I teach you the Superman: he is that lightning, he is that frenzy!—"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra had thus spoken, one of the people called out: “We have now heard enough of the rope-dancer; it is time now for us to see him!” And all the people laughed at Zarathustra. But the rope-dancer, who thought the words applied to him, began his performance."
+    },
+    {
+     "type": "section",
+     "text": "4"
+    },
+    {
+     "type": "p",
+     "text": "Zarathustra, however, looked at the people and wondered. Then he spake thus:"
+    },
+    {
+     "type": "p",
+     "text": "Man is a rope stretched between the animal and the Superman—a rope over an abyss."
+    },
+    {
+     "type": "p",
+     "text": "A dangerous crossing, a dangerous wayfaring, a dangerous looking-back, a dangerous trembling and halting."
+    },
+    {
+     "type": "p",
+     "text": "What is great in man is that he is a bridge and not a goal: what is lovable in man is that he is an OVER-GOING and a DOWN-GOING."
+    },
+    {
+     "type": "p",
+     "text": "I love those that know not how to live except as down-goers, for they are the over-goers."
+    },
+    {
+     "type": "p",
+     "text": "I love the great despisers, because they are the great adorers, and arrows of longing for the other shore."
+    },
+    {
+     "type": "p",
+     "text": "I love those who do not first seek a reason beyond the stars for going down and being sacrifices, but sacrifice themselves to the earth, that the earth of the Superman may hereafter arrive."
+    },
+    {
+     "type": "p",
+     "text": "I love him who liveth in order to know, and seeketh to know in order that the Superman may hereafter live. Thus seeketh he his own down-going."
+    },
+    {
+     "type": "p",
+     "text": "I love him who laboureth and inventeth, that he may build the house for the Superman, and prepare for him earth, animal, and plant: for thus seeketh he his own down-going."
+    },
+    {
+     "type": "p",
+     "text": "I love him who loveth his virtue: for virtue is the will to down-going, and an arrow of longing."
+    },
+    {
+     "type": "p",
+     "text": "I love him who reserveth no share of spirit for himself, but wanteth to be wholly the spirit of his virtue: thus walketh he as spirit over the bridge."
+    },
+    {
+     "type": "p",
+     "text": "I love him who maketh his virtue his inclination and destiny: thus, for the sake of his virtue, he is willing to live on, or live no more."
+    },
+    {
+     "type": "p",
+     "text": "I love him who desireth not too many virtues. One virtue is more of a virtue than two, because it is more of a knot for one’s destiny to cling to."
+    },
+    {
+     "type": "p",
+     "text": "I love him whose soul is lavish, who wanteth no thanks and doth not give back: for he always bestoweth, and desireth not to keep for himself."
+    },
+    {
+     "type": "p",
+     "text": "I love him who is ashamed when the dice fall in his favour, and who then asketh: “Am I a dishonest player?”—for he is willing to succumb."
+    },
+    {
+     "type": "p",
+     "text": "I love him who scattereth golden words in advance of his deeds, and always doeth more than he promiseth: for he seeketh his own down-going."
+    },
+    {
+     "type": "p",
+     "text": "I love him who justifieth the future ones, and redeemeth the past ones: for he is willing to succumb through the present ones."
+    },
+    {
+     "type": "p",
+     "text": "I love him who chasteneth his God, because he loveth his God: for he must succumb through the wrath of his God."
+    },
+    {
+     "type": "p",
+     "text": "I love him whose soul is deep even in the wounding, and may succumb through a small matter: thus goeth he willingly over the bridge."
+    },
+    {
+     "type": "p",
+     "text": "I love him whose soul is so overfull that he forgetteth himself, and all things are in him: thus all things become his down-going."
+    },
+    {
+     "type": "p",
+     "text": "I love him who is of a free spirit and a free heart: thus is his head only the bowels of his heart; his heart, however, causeth his down-going."
+    },
+    {
+     "type": "p",
+     "text": "I love all who are like heavy drops falling one by one out of the dark cloud that lowereth over man: they herald the coming of the lightning, and succumb as heralds."
+    },
+    {
+     "type": "p",
+     "text": "Lo, I am a herald of the lightning, and a heavy drop out of the cloud: the lightning, however, is the SUPERMAN.—"
+    },
+    {
+     "type": "section",
+     "text": "5"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra had spoken these words, he again looked at the people, and was silent. “There they stand,” said he to his heart; “there they laugh: they understand me not; I am not the mouth for these ears."
+    },
+    {
+     "type": "p",
+     "text": "Must one first batter their ears, that they may learn to hear with their eyes? Must one clatter like kettledrums and penitential preachers? Or do they only believe the stammerer?"
+    },
+    {
+     "type": "p",
+     "text": "They have something whereof they are proud. What do they call it, that which maketh them proud? Culture, they call it; it distinguisheth them from the goatherds."
+    },
+    {
+     "type": "p",
+     "text": "They dislike, therefore, to hear of ‘contempt’ of themselves. So I will appeal to their pride."
+    },
+    {
+     "type": "p",
+     "text": "I will speak unto them of the most contemptible thing: that, however, is THE LAST MAN!”"
+    },
+    {
+     "type": "p",
+     "text": "And thus spake Zarathustra unto the people:"
+    },
+    {
+     "type": "p",
+     "text": "It is time for man to fix his goal. It is time for man to plant the germ of his highest hope."
+    },
+    {
+     "type": "p",
+     "text": "Still is his soil rich enough for it. But that soil will one day be poor and exhausted, and no lofty tree will any longer be able to grow thereon."
+    },
+    {
+     "type": "p",
+     "text": "Alas! there cometh the time when man will no longer launch the arrow of his longing beyond man—and the string of his bow will have unlearned to whizz!"
+    },
+    {
+     "type": "p",
+     "text": "I tell you: one must still have chaos in one, to give birth to a dancing star. I tell you: ye have still chaos in you."
+    },
+    {
+     "type": "p",
+     "text": "Alas! There cometh the time when man will no longer give birth to any star. Alas! There cometh the time of the most despicable man, who can no longer despise himself."
+    },
+    {
+     "type": "p",
+     "text": "Lo! I show you THE LAST MAN."
+    },
+    {
+     "type": "p",
+     "text": "“What is love? What is creation? What is longing? What is a star?”—so asketh the last man and blinketh."
+    },
+    {
+     "type": "p",
+     "text": "The earth hath then become small, and on it there hoppeth the last man who maketh everything small. His species is ineradicable like that of the ground-flea; the last man liveth longest."
+    },
+    {
+     "type": "p",
+     "text": "“We have discovered happiness”—say the last men, and blink thereby."
+    },
+    {
+     "type": "p",
+     "text": "They have left the regions where it is hard to live; for they need warmth. One still loveth one’s neighbour and rubbeth against him; for one needeth warmth."
+    },
+    {
+     "type": "p",
+     "text": "Turning ill and being distrustful, they consider sinful: they walk warily. He is a fool who still stumbleth over stones or men!"
+    },
+    {
+     "type": "p",
+     "text": "A little poison now and then: that maketh pleasant dreams. And much poison at last for a pleasant death."
+    },
+    {
+     "type": "p",
+     "text": "One still worketh, for work is a pastime. But one is careful lest the pastime should hurt one."
+    },
+    {
+     "type": "p",
+     "text": "One no longer becometh poor or rich; both are too burdensome. Who still wanteth to rule? Who still wanteth to obey? Both are too burdensome."
+    },
+    {
+     "type": "p",
+     "text": "No shepherd, and one herd! Every one wanteth the same; every one is equal: he who hath other sentiments goeth voluntarily into the madhouse."
+    },
+    {
+     "type": "p",
+     "text": "“Formerly all the world was insane,”—say the subtlest of them, and blink thereby."
+    },
+    {
+     "type": "p",
+     "text": "They are clever and know all that hath happened: so there is no end to their raillery. People still fall out, but are soon reconciled—otherwise it spoileth their stomachs."
+    },
+    {
+     "type": "p",
+     "text": "They have their little pleasures for the day, and their little pleasures for the night, but they have a regard for health."
+    },
+    {
+     "type": "p",
+     "text": "“We have discovered happiness,”—say the last men, and blink thereby.—"
+    },
+    {
+     "type": "p",
+     "text": "And here ended the first discourse of Zarathustra, which is also called “The Prologue”: for at this point the shouting and mirth of the multitude interrupted him. “Give us this last man, O Zarathustra,”—they called out—“make us into these last men! Then will we make thee a present of the Superman!” And all the people exulted and smacked their lips. Zarathustra, however, turned sad, and said to his heart:"
+    },
+    {
+     "type": "p",
+     "text": "“They understand me not: I am not the mouth for these ears."
+    },
+    {
+     "type": "p",
+     "text": "Too long, perhaps, have I lived in the mountains; too much have I hearkened unto the brooks and trees: now do I speak unto them as unto the goatherds."
+    },
+    {
+     "type": "p",
+     "text": "Calm is my soul, and clear, like the mountains in the morning. But they think me cold, and a mocker with terrible jests."
+    },
+    {
+     "type": "p",
+     "text": "And now do they look at me and laugh: and while they laugh they hate me too. There is ice in their laughter.”"
+    },
+    {
+     "type": "section",
+     "text": "6"
+    },
+    {
+     "type": "p",
+     "text": "Then, however, something happened which made every mouth mute and every eye fixed. In the meantime, of course, the rope-dancer had commenced his performance: he had come out at a little door, and was going along the rope which was stretched between two towers, so that it hung above the market-place and the people. When he was just midway across, the little door opened once more, and a gaudily-dressed fellow like a buffoon sprang out, and went rapidly after the first one. “Go on, halt-foot,” cried his frightful voice, “go on, lazy-bones, interloper, sallow-face!—lest I tickle thee with my heel! What dost thou here between the towers? In the tower is the place for thee, thou shouldst be locked up; to one better than thyself thou blockest the way!”—And with every word he came nearer and nearer the first one. When, however, he was but a step behind, there happened the frightful thing which made every mouth mute and every eye fixed—he uttered a yell like a devil, and jumped over the other who was in his way. The latter, however, when he thus saw his rival triumph, lost at the same time his head and his footing on the rope; he threw his pole away, and shot downwards faster than it, like an eddy of arms and legs, into the depth. The market-place and the people were like the sea when the storm cometh on: they all flew apart and in disorder, especially where the body was about to fall."
+    },
+    {
+     "type": "p",
+     "text": "Zarathustra, however, remained standing, and just beside him fell the body, badly injured and disfigured, but not yet dead. After a while consciousness returned to the shattered man, and he saw Zarathustra kneeling beside him. “What art thou doing there?” said he at last, “I knew long ago that the devil would trip me up. Now he draggeth me to hell: wilt thou prevent him?”"
+    },
+    {
+     "type": "p",
+     "text": "“On mine honour, my friend,” answered Zarathustra, “there is nothing of all that whereof thou speakest: there is no devil and no hell. Thy soul will be dead even sooner than thy body: fear, therefore, nothing any more!”"
+    },
+    {
+     "type": "p",
+     "text": "The man looked up distrustfully. “If thou speakest the truth,” said he, “I lose nothing when I lose my life. I am not much more than an animal which hath been taught to dance by blows and scanty fare.”"
+    },
+    {
+     "type": "p",
+     "text": "“Not at all,” said Zarathustra, “thou hast made danger thy calling; therein there is nothing contemptible. Now thou perishest by thy calling: therefore will I bury thee with mine own hands.”"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra had said this the dying one did not reply further; but he moved his hand as if he sought the hand of Zarathustra in gratitude."
+    },
+    {
+     "type": "section",
+     "text": "7"
+    },
+    {
+     "type": "p",
+     "text": "Meanwhile the evening came on, and the market-place veiled itself in gloom. Then the people dispersed, for even curiosity and terror become fatigued. Zarathustra, however, still sat beside the dead man on the ground, absorbed in thought: so he forgot the time. But at last it became night, and a cold wind blew upon the lonely one. Then arose Zarathustra and said to his heart:"
+    },
+    {
+     "type": "p",
+     "text": "Verily, a fine catch of fish hath Zarathustra made to-day! It is not a man he hath caught, but a corpse."
+    },
+    {
+     "type": "p",
+     "text": "Sombre is human life, and as yet without meaning: a buffoon may be fateful to it."
+    },
+    {
+     "type": "p",
+     "text": "I want to teach men the sense of their existence, which is the Superman, the lightning out of the dark cloud—man."
+    },
+    {
+     "type": "p",
+     "text": "But still am I far from them, and my sense speaketh not unto their sense. To men I am still something between a fool and a corpse."
+    },
+    {
+     "type": "p",
+     "text": "Gloomy is the night, gloomy are the ways of Zarathustra. Come, thou cold and stiff companion! I carry thee to the place where I shall bury thee with mine own hands."
+    },
+    {
+     "type": "section",
+     "text": "8"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra had said this to his heart, he put the corpse upon his shoulders and set out on his way. Yet had he not gone a hundred steps, when there stole a man up to him and whispered in his ear—and lo! he that spake was the buffoon from the tower. “Leave this town, O Zarathustra,” said he, “there are too many here who hate thee. The good and just hate thee, and call thee their enemy and despiser; the believers in the orthodox belief hate thee, and call thee a danger to the multitude. It was thy good fortune to be laughed at: and verily thou spakest like a buffoon. It was thy good fortune to associate with the dead dog; by so humiliating thyself thou hast saved thy life to-day. Depart, however, from this town,—or to-morrow I shall jump over thee, a living man over a dead one.” And when he had said this, the buffoon vanished; Zarathustra, however, went on through the dark streets."
+    },
+    {
+     "type": "p",
+     "text": "At the gate of the town the grave-diggers met him: they shone their torch on his face, and, recognising Zarathustra, they sorely derided him. “Zarathustra is carrying away the dead dog: a fine thing that Zarathustra hath turned a grave-digger! For our hands are too cleanly for that roast. Will Zarathustra steal the bite from the devil? Well then, good luck to the repast! If only the devil is not a better thief than Zarathustra!—he will steal them both, he will eat them both!” And they laughed among themselves, and put their heads together."
+    },
+    {
+     "type": "p",
+     "text": "Zarathustra made no answer thereto, but went on his way. When he had gone on for two hours, past forests and swamps, he had heard too much of the hungry howling of the wolves, and he himself became a-hungry. So he halted at a lonely house in which a light was burning."
+    },
+    {
+     "type": "p",
+     "text": "“Hunger attacketh me,” said Zarathustra, “like a robber. Among forests and swamps my hunger attacketh me, and late in the night."
+    },
+    {
+     "type": "p",
+     "text": "“Strange humours hath my hunger. Often it cometh to me only after a repast, and all day it hath failed to come: where hath it been?”"
+    },
+    {
+     "type": "p",
+     "text": "And thereupon Zarathustra knocked at the door of the house. An old man appeared, who carried a light, and asked: “Who cometh unto me and my bad sleep?”"
+    },
+    {
+     "type": "p",
+     "text": "“A living man and a dead one,” said Zarathustra. “Give me something to eat and drink, I forgot it during the day. He that feedeth the hungry refresheth his own soul, saith wisdom.”"
+    },
+    {
+     "type": "p",
+     "text": "The old man withdrew, but came back immediately and offered Zarathustra bread and wine. “A bad country for the hungry,” said he; “that is why I live here. Animal and man come unto me, the anchorite. But bid thy companion eat and drink also, he is wearier than thou.” Zarathustra answered: “My companion is dead; I shall hardly be able to persuade him to eat.” “That doth not concern me,” said the old man sullenly; “he that knocketh at my door must take what I offer him. Eat, and fare ye well!”—"
+    },
+    {
+     "type": "p",
+     "text": "Thereafter Zarathustra again went on for two hours, trusting to the path and the light of the stars: for he was an experienced night-walker, and liked to look into the face of all that slept. When the morning dawned, however, Zarathustra found himself in a thick forest, and no path was any longer visible. He then put the dead man in a hollow tree at his head—for he wanted to protect him from the wolves—and laid himself down on the ground and moss. And immediately he fell asleep, tired in body, but with a tranquil soul."
+    },
+    {
+     "type": "section",
+     "text": "9"
+    },
+    {
+     "type": "p",
+     "text": "Long slept Zarathustra; and not only the rosy dawn passed over his head, but also the morning. At last, however, his eyes opened, and amazedly he gazed into the forest and the stillness, amazedly he gazed into himself. Then he arose quickly, like a seafarer who all at once seeth the land; and he shouted for joy: for he saw a new truth. And he spake thus to his heart:"
+    },
+    {
+     "type": "p",
+     "text": "A light hath dawned upon me: I need companions—living ones; not dead companions and corpses, which I carry with me where I will."
+    },
+    {
+     "type": "p",
+     "text": "But I need living companions, who will follow me because they want to follow themselves—and to the place where I will."
+    },
+    {
+     "type": "p",
+     "text": "A light hath dawned upon me. Not to the people is Zarathustra to speak, but to companions! Zarathustra shall not be the herd’s herdsman and hound!"
+    },
+    {
+     "type": "p",
+     "text": "To allure many from the herd—for that purpose have I come. The people and the herd must be angry with me: a robber shall Zarathustra be called by the herdsmen."
+    },
+    {
+     "type": "p",
+     "text": "Herdsmen, I say, but they call themselves the good and just. Herdsmen, I say, but they call themselves the believers in the orthodox belief."
+    },
+    {
+     "type": "p",
+     "text": "Behold the good and just! Whom do they hate most? Him who breaketh up their tables of values, the breaker, the law-breaker:—he, however, is the creator."
+    },
+    {
+     "type": "p",
+     "text": "Behold the believers of all beliefs! Whom do they hate most? Him who breaketh up their tables of values, the breaker, the law-breaker—he, however, is the creator."
+    },
+    {
+     "type": "p",
+     "text": "Companions, the creator seeketh, not corpses—and not herds or believers either. Fellow-creators the creator seeketh—those who grave new values on new tables."
+    },
+    {
+     "type": "p",
+     "text": "Companions, the creator seeketh, and fellow-reapers: for everything is ripe for the harvest with him. But he lacketh the hundred sickles: so he plucketh the ears of corn and is vexed."
+    },
+    {
+     "type": "p",
+     "text": "Companions, the creator seeketh, and such as know how to whet their sickles. Destroyers, will they be called, and despisers of good and evil. But they are the reapers and rejoicers."
+    },
+    {
+     "type": "p",
+     "text": "Fellow-creators, Zarathustra seeketh; fellow-reapers and fellow-rejoicers, Zarathustra seeketh: what hath he to do with herds and herdsmen and corpses!"
+    },
+    {
+     "type": "p",
+     "text": "And thou, my first companion, rest in peace! Well have I buried thee in thy hollow tree; well have I hid thee from the wolves."
+    },
+    {
+     "type": "p",
+     "text": "But I part from thee; the time hath arrived. ‘Twixt rosy dawn and rosy dawn there came unto me a new truth."
+    },
+    {
+     "type": "p",
+     "text": "I am not to be a herdsman, I am not to be a grave-digger. Not any more will I discourse unto the people; for the last time have I spoken unto the dead."
+    },
+    {
+     "type": "p",
+     "text": "With the creators, the reapers, and the rejoicers will I associate: the rainbow will I show them, and all the stairs to the Superman."
+    },
+    {
+     "type": "p",
+     "text": "To the lone-dwellers will I sing my song, and to the twain-dwellers; and unto him who hath still ears for the unheard, will I make the heart heavy with my happiness."
+    },
+    {
+     "type": "p",
+     "text": "I make for my goal, I follow my course; over the loitering and tardy will I leap. Thus let my on-going be their down-going!"
+    },
+    {
+     "type": "section",
+     "text": "10"
+    },
+    {
+     "type": "p",
+     "text": "This had Zarathustra said to his heart when the sun stood at noontide. Then he looked inquiringly aloft,—for he heard above him the sharp call of a bird. And behold! An eagle swept through the air in wide circles, and on it hung a serpent, not like a prey, but like a friend: for it kept itself coiled round the eagle’s neck."
+    },
+    {
+     "type": "p",
+     "text": "“They are mine animals,” said Zarathustra, and rejoiced in his heart."
+    },
+    {
+     "type": "p",
+     "text": "“The proudest animal under the sun, and the wisest animal under the sun,—they have come out to reconnoitre."
+    },
+    {
+     "type": "p",
+     "text": "They want to know whether Zarathustra still liveth. Verily, do I still live?"
+    },
+    {
+     "type": "p",
+     "text": "More dangerous have I found it among men than among animals; in dangerous paths goeth Zarathustra. Let mine animals lead me!”"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra had said this, he remembered the words of the saint in the forest. Then he sighed and spake thus to his heart:"
+    },
+    {
+     "type": "p",
+     "text": "“Would that I were wiser! Would that I were wise from the very heart, like my serpent!"
+    },
+    {
+     "type": "p",
+     "text": "But I am asking the impossible. Therefore do I ask my pride to go always with my wisdom!"
+    },
+    {
+     "type": "p",
+     "text": "And if my wisdom should some day forsake me:—alas! it loveth to fly away!—may my pride then fly with my folly!”"
+    },
+    {
+     "type": "p",
+     "text": "Thus began Zarathustra’s down-going."
+    }
+   ]
+  },
+  {
+   "id": 1,
+   "part": 0,
+   "number": "I",
+   "title": "The Three Metamorphoses",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "Three metamorphoses of the spirit do I designate to you: how the spirit becometh a camel, the camel a lion, and the lion at last a child."
+    },
+    {
+     "type": "p",
+     "text": "Many heavy things are there for the spirit, the strong load-bearing spirit in which reverence dwelleth: for the heavy and the heaviest longeth its strength."
+    },
+    {
+     "type": "p",
+     "text": "What is heavy? so asketh the load-bearing spirit; then kneeleth it down like the camel, and wanteth to be well laden."
+    },
+    {
+     "type": "p",
+     "text": "What is the heaviest thing, ye heroes? asketh the load-bearing spirit, that I may take it upon me and rejoice in my strength."
+    },
+    {
+     "type": "p",
+     "text": "Is it not this: To humiliate oneself in order to mortify one’s pride? To exhibit one’s folly in order to mock at one’s wisdom?"
+    },
+    {
+     "type": "p",
+     "text": "Or is it this: To desert our cause when it celebrateth its triumph? To ascend high mountains to tempt the tempter?"
+    },
+    {
+     "type": "p",
+     "text": "Or is it this: To feed on the acorns and grass of knowledge, and for the sake of truth to suffer hunger of soul?"
+    },
+    {
+     "type": "p",
+     "text": "Or is it this: To be sick and dismiss comforters, and make friends of the deaf, who never hear thy requests?"
+    },
+    {
+     "type": "p",
+     "text": "Or is it this: To go into foul water when it is the water of truth, and not disclaim cold frogs and hot toads?"
+    },
+    {
+     "type": "p",
+     "text": "Or is it this: To love those who despise us, and give one’s hand to the phantom when it is going to frighten us?"
+    },
+    {
+     "type": "p",
+     "text": "All these heaviest things the load-bearing spirit taketh upon itself: and like the camel, which, when laden, hasteneth into the wilderness, so hasteneth the spirit into its wilderness."
+    },
+    {
+     "type": "p",
+     "text": "But in the loneliest wilderness happeneth the second metamorphosis: here the spirit becometh a lion; freedom will it capture, and lordship in its own wilderness."
+    },
+    {
+     "type": "p",
+     "text": "Its last Lord it here seeketh: hostile will it be to him, and to its last God; for victory will it struggle with the great dragon."
+    },
+    {
+     "type": "p",
+     "text": "What is the great dragon which the spirit is no longer inclined to call Lord and God? “Thou shalt,” is the great dragon called. But the spirit of the lion saith, “I will.”"
+    },
+    {
+     "type": "p",
+     "text": "“Thou shalt,” lieth in its path, sparkling with gold—a scale-covered beast; and on every scale glittereth golden, “Thou shalt!”"
+    },
+    {
+     "type": "p",
+     "text": "The values of a thousand years glitter on those scales, and thus speaketh the mightiest of all dragons: “All the values of things—glitter on me."
+    },
+    {
+     "type": "p",
+     "text": "All values have already been created, and all created values—do I represent. Verily, there shall be no ‘I will’ any more.” Thus speaketh the dragon."
+    },
+    {
+     "type": "p",
+     "text": "My brethren, wherefore is there need of the lion in the spirit? Why sufficeth not the beast of burden, which renounceth and is reverent?"
+    },
+    {
+     "type": "p",
+     "text": "To create new values—that, even the lion cannot yet accomplish: but to create itself freedom for new creating—that can the might of the lion do."
+    },
+    {
+     "type": "p",
+     "text": "To create itself freedom, and give a holy Nay even unto duty: for that, my brethren, there is need of the lion."
+    },
+    {
+     "type": "p",
+     "text": "To assume the right to new values—that is the most formidable assumption for a load-bearing and reverent spirit. Verily, unto such a spirit it is preying, and the work of a beast of prey."
+    },
+    {
+     "type": "p",
+     "text": "As its holiest, it once loved “Thou shalt”: now is it forced to find illusion and arbitrariness even in the holiest things, that it may capture freedom from its love: the lion is needed for this capture."
+    },
+    {
+     "type": "p",
+     "text": "But tell me, my brethren, what the child can do, which even the lion could not do? Why hath the preying lion still to become a child?"
+    },
+    {
+     "type": "p",
+     "text": "Innocence is the child, and forgetfulness, a new beginning, a game, a self-rolling wheel, a first movement, a holy Yea."
+    },
+    {
+     "type": "p",
+     "text": "Aye, for the game of creating, my brethren, there is needed a holy Yea unto life: ITS OWN will, willeth now the spirit; HIS OWN world winneth the world’s outcast."
+    },
+    {
+     "type": "p",
+     "text": "Three metamorphoses of the spirit have I designated to you: how the spirit became a camel, the camel a lion, and the lion at last a child.—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra. And at that time he abode in the town which is called The Pied Cow."
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "part": 0,
+   "number": "II",
+   "title": "The Academic Chairs of Virtue",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "People commended unto Zarathustra a wise man, as one who could discourse well about sleep and virtue: greatly was he honoured and rewarded for it, and all the youths sat before his chair. To him went Zarathustra, and sat among the youths before his chair. And thus spake the wise man:"
+    },
+    {
+     "type": "p",
+     "text": "Respect and modesty in presence of sleep! That is the first thing! And to go out of the way of all who sleep badly and keep awake at night!"
+    },
+    {
+     "type": "p",
+     "text": "Modest is even the thief in presence of sleep: he always stealeth softly through the night. Immodest, however, is the night-watchman; immodestly he carrieth his horn."
+    },
+    {
+     "type": "p",
+     "text": "No small art is it to sleep: it is necessary for that purpose to keep awake all day."
+    },
+    {
+     "type": "p",
+     "text": "Ten times a day must thou overcome thyself: that causeth wholesome weariness, and is poppy to the soul."
+    },
+    {
+     "type": "p",
+     "text": "Ten times must thou reconcile again with thyself; for overcoming is bitterness, and badly sleep the unreconciled."
+    },
+    {
+     "type": "p",
+     "text": "Ten truths must thou find during the day; otherwise wilt thou seek truth during the night, and thy soul will have been hungry."
+    },
+    {
+     "type": "p",
+     "text": "Ten times must thou laugh during the day, and be cheerful; otherwise thy stomach, the father of affliction, will disturb thee in the night."
+    },
+    {
+     "type": "p",
+     "text": "Few people know it, but one must have all the virtues in order to sleep well. Shall I bear false witness? Shall I commit adultery?"
+    },
+    {
+     "type": "p",
+     "text": "Shall I covet my neighbour’s maidservant? All that would ill accord with good sleep."
+    },
+    {
+     "type": "p",
+     "text": "And even if one have all the virtues, there is still one thing needful: to send the virtues themselves to sleep at the right time."
+    },
+    {
+     "type": "p",
+     "text": "That they may not quarrel with one another, the good females! And about thee, thou unhappy one!"
+    },
+    {
+     "type": "p",
+     "text": "Peace with God and thy neighbour: so desireth good sleep. And peace also with thy neighbour’s devil! Otherwise it will haunt thee in the night."
+    },
+    {
+     "type": "p",
+     "text": "Honour to the government, and obedience, and also to the crooked government! So desireth good sleep. How can I help it, if power like to walk on crooked legs?"
+    },
+    {
+     "type": "p",
+     "text": "He who leadeth his sheep to the greenest pasture, shall always be for me the best shepherd: so doth it accord with good sleep."
+    },
+    {
+     "type": "p",
+     "text": "Many honours I want not, nor great treasures: they excite the spleen. But it is bad sleeping without a good name and a little treasure."
+    },
+    {
+     "type": "p",
+     "text": "A small company is more welcome to me than a bad one: but they must come and go at the right time. So doth it accord with good sleep."
+    },
+    {
+     "type": "p",
+     "text": "Well, also, do the poor in spirit please me: they promote sleep. Blessed are they, especially if one always give in to them."
+    },
+    {
+     "type": "p",
+     "text": "Thus passeth the day unto the virtuous. When night cometh, then take I good care not to summon sleep. It disliketh to be summoned—sleep, the lord of the virtues!"
+    },
+    {
+     "type": "p",
+     "text": "But I think of what I have done and thought during the day. Thus ruminating, patient as a cow, I ask myself: What were thy ten overcomings?"
+    },
+    {
+     "type": "p",
+     "text": "And what were the ten reconciliations, and the ten truths, and the ten laughters with which my heart enjoyed itself?"
+    },
+    {
+     "type": "p",
+     "text": "Thus pondering, and cradled by forty thoughts, it overtaketh me all at once—sleep, the unsummoned, the lord of the virtues."
+    },
+    {
+     "type": "p",
+     "text": "Sleep tappeth on mine eye, and it turneth heavy. Sleep toucheth my mouth, and it remaineth open."
+    },
+    {
+     "type": "p",
+     "text": "Verily, on soft soles doth it come to me, the dearest of thieves, and stealeth from me my thoughts: stupid do I then stand, like this academic chair."
+    },
+    {
+     "type": "p",
+     "text": "But not much longer do I then stand: I already lie.—"
+    },
+    {
+     "type": "p",
+     "text": "When Zarathustra heard the wise man thus speak, he laughed in his heart: for thereby had a light dawned upon him. And thus spake he to his heart:"
+    },
+    {
+     "type": "p",
+     "text": "A fool seemeth this wise man with his forty thoughts: but I believe he knoweth well how to sleep."
+    },
+    {
+     "type": "p",
+     "text": "Happy even is he who liveth near this wise man! Such sleep is contagious—even through a thick wall it is contagious."
+    },
+    {
+     "type": "p",
+     "text": "A magic resideth even in his academic chair. And not in vain did the youths sit before the preacher of virtue."
+    },
+    {
+     "type": "p",
+     "text": "His wisdom is to keep awake in order to sleep well. And verily, if life had no sense, and had I to choose nonsense, this would be the desirablest nonsense for me also."
+    },
+    {
+     "type": "p",
+     "text": "Now know I well what people sought formerly above all else when they sought teachers of virtue. Good sleep they sought for themselves, and poppy-head virtues to promote it!"
+    },
+    {
+     "type": "p",
+     "text": "To all those belauded sages of the academic chairs, wisdom was sleep without dreams: they knew no higher significance of life."
+    },
+    {
+     "type": "p",
+     "text": "Even at present, to be sure, there are some like this preacher of virtue, and not always so honourable: but their time is past. And not much longer do they stand: there they already lie."
+    },
+    {
+     "type": "p",
+     "text": "Blessed are those drowsy ones: for they shall soon nod to sleep.—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra."
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "part": 0,
+   "number": "III",
+   "title": "Backworldsmen",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "Once on a time, Zarathustra also cast his fancy beyond man, like all backworldsmen. The work of a suffering and tortured God, did the world then seem to me."
+    },
+    {
+     "type": "p",
+     "text": "The dream—and diction—of a God, did the world then seem to me; coloured vapours before the eyes of a divinely dissatisfied one."
+    },
+    {
+     "type": "p",
+     "text": "Good and evil, and joy and woe, and I and thou—coloured vapours did they seem to me before creative eyes. The creator wished to look away from himself,—thereupon he created the world."
+    },
+    {
+     "type": "p",
+     "text": "Intoxicating joy is it for the sufferer to look away from his suffering and forget himself. Intoxicating joy and self-forgetting, did the world once seem to me."
+    },
+    {
+     "type": "p",
+     "text": "This world, the eternally imperfect, an eternal contradiction’s image and imperfect image—an intoxicating joy to its imperfect creator:—thus did the world once seem to me."
+    },
+    {
+     "type": "p",
+     "text": "Thus, once on a time, did I also cast my fancy beyond man, like all backworldsmen. Beyond man, forsooth?"
+    },
+    {
+     "type": "p",
+     "text": "Ah, ye brethren, that God whom I created was human work and human madness, like all the Gods!"
+    },
+    {
+     "type": "p",
+     "text": "A man was he, and only a poor fragment of a man and ego. Out of mine own ashes and glow it came unto me, that phantom. And verily, it came not unto me from the beyond!"
+    },
+    {
+     "type": "p",
+     "text": "What happened, my brethren? I surpassed myself, the suffering one; I carried mine own ashes to the mountain; a brighter flame I contrived for myself. And lo! Thereupon the phantom WITHDREW from me!"
+    },
+    {
+     "type": "p",
+     "text": "To me the convalescent would it now be suffering and torment to believe in such phantoms: suffering would it now be to me, and humiliation. Thus speak I to backworldsmen."
+    },
+    {
+     "type": "p",
+     "text": "Suffering was it, and impotence—that created all backworlds; and the short madness of happiness, which only the greatest sufferer experienceth."
+    },
+    {
+     "type": "p",
+     "text": "Weariness, which seeketh to get to the ultimate with one leap, with a death-leap; a poor ignorant weariness, unwilling even to will any longer: that created all Gods and backworlds."
+    },
+    {
+     "type": "p",
+     "text": "Believe me, my brethren! It was the body which despaired of the body—it groped with the fingers of the infatuated spirit at the ultimate walls."
+    },
+    {
+     "type": "p",
+     "text": "Believe me, my brethren! It was the body which despaired of the earth—it heard the bowels of existence speaking unto it."
+    },
+    {
+     "type": "p",
+     "text": "And then it sought to get through the ultimate walls with its head—and not with its head only—into “the other world.”"
+    },
+    {
+     "type": "p",
+     "text": "But that “other world” is well concealed from man, that dehumanised, inhuman world, which is a celestial naught; and the bowels of existence do not speak unto man, except as man."
+    },
+    {
+     "type": "p",
+     "text": "Verily, it is difficult to prove all being, and hard to make it speak. Tell me, ye brethren, is not the strangest of all things best proved?"
+    },
+    {
+     "type": "p",
+     "text": "Yea, this ego, with its contradiction and perplexity, speaketh most uprightly of its being—this creating, willing, evaluing ego, which is the measure and value of things."
+    },
+    {
+     "type": "p",
+     "text": "And this most upright existence, the ego—it speaketh of the body, and still implieth the body, even when it museth and raveth and fluttereth with broken wings."
+    },
+    {
+     "type": "p",
+     "text": "Always more uprightly learneth it to speak, the ego; and the more it learneth, the more doth it find titles and honours for the body and the earth."
+    },
+    {
+     "type": "p",
+     "text": "A new pride taught me mine ego, and that teach I unto men: no longer to thrust one’s head into the sand of celestial things, but to carry it freely, a terrestrial head, which giveth meaning to the earth!"
+    },
+    {
+     "type": "p",
+     "text": "A new will teach I unto men: to choose that path which man hath followed blindly, and to approve of it—and no longer to slink aside from it, like the sick and perishing!"
+    },
+    {
+     "type": "p",
+     "text": "The sick and perishing—it was they who despised the body and the earth, and invented the heavenly world, and the redeeming blood-drops; but even those sweet and sad poisons they borrowed from the body and the earth!"
+    },
+    {
+     "type": "p",
+     "text": "From their misery they sought escape, and the stars were too remote for them. Then they sighed: “O that there were heavenly paths by which to steal into another existence and into happiness!” Then they contrived for themselves their by-paths and bloody draughts!"
+    },
+    {
+     "type": "p",
+     "text": "Beyond the sphere of their body and this earth they now fancied themselves transported, these ungrateful ones. But to what did they owe the convulsion and rapture of their transport? To their body and this earth."
+    },
+    {
+     "type": "p",
+     "text": "Gentle is Zarathustra to the sickly. Verily, he is not indignant at their modes of consolation and ingratitude. May they become convalescents and overcomers, and create higher bodies for themselves!"
+    },
+    {
+     "type": "p",
+     "text": "Neither is Zarathustra indignant at a convalescent who looketh tenderly on his delusions, and at midnight stealeth round the grave of his God; but sickness and a sick frame remain even in his tears."
+    },
+    {
+     "type": "p",
+     "text": "Many sickly ones have there always been among those who muse, and languish for God; violently they hate the discerning ones, and the latest of virtues, which is uprightness."
+    },
+    {
+     "type": "p",
+     "text": "Backward they always gaze toward dark ages: then, indeed, were delusion and faith something different. Raving of the reason was likeness to God, and doubt was sin."
+    },
+    {
+     "type": "p",
+     "text": "Too well do I know those godlike ones: they insist on being believed in, and that doubt is sin. Too well, also, do I know what they themselves most believe in."
+    },
+    {
+     "type": "p",
+     "text": "Verily, not in backworlds and redeeming blood-drops: but in the body do they also believe most; and their own body is for them the thing-in-itself."
+    },
+    {
+     "type": "p",
+     "text": "But it is a sickly thing to them, and gladly would they get out of their skin. Therefore hearken they to the preachers of death, and themselves preach backworlds."
+    },
+    {
+     "type": "p",
+     "text": "Hearken rather, my brethren, to the voice of the healthy body; it is a more upright and pure voice."
+    },
+    {
+     "type": "p",
+     "text": "More uprightly and purely speaketh the healthy body, perfect and square-built; and it speaketh of the meaning of the earth.—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra."
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "part": 0,
+   "number": "IV",
+   "title": "The Despisers of the Body",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "To the despisers of the body will I speak my word. I wish them neither to learn afresh, nor teach anew, but only to bid farewell to their own bodies,—and thus be dumb."
+    },
+    {
+     "type": "p",
+     "text": "“Body am I, and soul”—so saith the child. And why should one not speak like children?"
+    },
+    {
+     "type": "p",
+     "text": "But the awakened one, the knowing one, saith: “Body am I entirely, and nothing more; and soul is only the name of something in the body.”"
+    },
+    {
+     "type": "p",
+     "text": "The body is a big sagacity, a plurality with one sense, a war and a peace, a flock and a shepherd."
+    },
+    {
+     "type": "p",
+     "text": "An instrument of thy body is also thy little sagacity, my brother, which thou callest “spirit”—a little instrument and plaything of thy big sagacity."
+    },
+    {
+     "type": "p",
+     "text": "“Ego,” sayest thou, and art proud of that word. But the greater thing—in which thou art unwilling to believe—is thy body with its big sagacity; it saith not “ego,” but doeth it."
+    },
+    {
+     "type": "p",
+     "text": "What the sense feeleth, what the spirit discerneth, hath never its end in itself. But sense and spirit would fain persuade thee that they are the end of all things: so vain are they."
+    },
+    {
+     "type": "p",
+     "text": "Instruments and playthings are sense and spirit: behind them there is still the Self. The Self seeketh with the eyes of the senses, it hearkeneth also with the ears of the spirit."
+    },
+    {
+     "type": "p",
+     "text": "Ever hearkeneth the Self, and seeketh; it compareth, mastereth, conquereth, and destroyeth. It ruleth, and is also the ego’s ruler."
+    },
+    {
+     "type": "p",
+     "text": "Behind thy thoughts and feelings, my brother, there is a mighty lord, an unknown sage—it is called Self; it dwelleth in thy body, it is thy body."
+    },
+    {
+     "type": "p",
+     "text": "There is more sagacity in thy body than in thy best wisdom. And who then knoweth why thy body requireth just thy best wisdom?"
+    },
+    {
+     "type": "p",
+     "text": "Thy Self laugheth at thine ego, and its proud prancings. “What are these prancings and flights of thought unto me?” it saith to itself. “A by-way to my purpose. I am the leading-string of the ego, and the prompter of its notions.”"
+    },
+    {
+     "type": "p",
+     "text": "The Self saith unto the ego: “Feel pain!” And thereupon it suffereth, and thinketh how it may put an end thereto—and for that very purpose it IS MEANT to think."
+    },
+    {
+     "type": "p",
+     "text": "The Self saith unto the ego: “Feel pleasure!” Thereupon it rejoiceth, and thinketh how it may ofttimes rejoice—and for that very purpose it IS MEANT to think."
+    },
+    {
+     "type": "p",
+     "text": "To the despisers of the body will I speak a word. That they despise is caused by their esteem. What is it that created esteeming and despising and worth and will?"
+    },
+    {
+     "type": "p",
+     "text": "The creating Self created for itself esteeming and despising, it created for itself joy and woe. The creating body created for itself spirit, as a hand to its will."
+    },
+    {
+     "type": "p",
+     "text": "Even in your folly and despising ye each serve your Self, ye despisers of the body. I tell you, your very Self wanteth to die, and turneth away from life."
+    },
+    {
+     "type": "p",
+     "text": "No longer can your Self do that which it desireth most:—create beyond itself. That is what it desireth most; that is all its fervour."
+    },
+    {
+     "type": "p",
+     "text": "But it is now too late to do so:—so your Self wisheth to succumb, ye despisers of the body."
+    },
+    {
+     "type": "p",
+     "text": "To succumb—so wisheth your Self; and therefore have ye become despisers of the body. For ye can no longer create beyond yourselves."
+    },
+    {
+     "type": "p",
+     "text": "And therefore are ye now angry with life and with the earth. And unconscious envy is in the sidelong look of your contempt."
+    },
+    {
+     "type": "p",
+     "text": "I go not your way, ye despisers of the body! Ye are no bridges for me to the Superman!—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra."
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "part": 0,
+   "number": "V",
+   "title": "Joys and Passions",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "My brother, when thou hast a virtue, and it is thine own virtue, thou hast it in common with no one."
+    },
+    {
+     "type": "p",
+     "text": "To be sure, thou wouldst call it by name and caress it; thou wouldst pull its ears and amuse thyself with it."
+    },
+    {
+     "type": "p",
+     "text": "And lo! Then hast thou its name in common with the people, and hast become one of the people and the herd with thy virtue!"
+    },
+    {
+     "type": "p",
+     "text": "Better for thee to say: “Ineffable is it, and nameless, that which is pain and sweetness to my soul, and also the hunger of my bowels.”"
+    },
+    {
+     "type": "p",
+     "text": "Let thy virtue be too high for the familiarity of names, and if thou must speak of it, be not ashamed to stammer about it."
+    },
+    {
+     "type": "p",
+     "text": "Thus speak and stammer: “That is MY good, that do I love, thus doth it please me entirely, thus only do _I_ desire the good."
+    },
+    {
+     "type": "p",
+     "text": "Not as the law of a God do I desire it, not as a human law or a human need do I desire it; it is not to be a guide-post for me to superearths and paradises."
+    },
+    {
+     "type": "p",
+     "text": "An earthly virtue is it which I love: little prudence is therein, and the least everyday wisdom."
+    },
+    {
+     "type": "p",
+     "text": "But that bird built its nest beside me: therefore, I love and cherish it—now sitteth it beside me on its golden eggs.”"
+    },
+    {
+     "type": "p",
+     "text": "Thus shouldst thou stammer, and praise thy virtue."
+    },
+    {
+     "type": "p",
+     "text": "Once hadst thou passions and calledst them evil. But now hast thou only thy virtues: they grew out of thy passions."
+    },
+    {
+     "type": "p",
+     "text": "Thou implantedst thy highest aim into the heart of those passions: then became they thy virtues and joys."
+    },
+    {
+     "type": "p",
+     "text": "And though thou wert of the race of the hot-tempered, or of the voluptuous, or of the fanatical, or the vindictive;"
+    },
+    {
+     "type": "p",
+     "text": "All thy passions in the end became virtues, and all thy devils angels."
+    },
+    {
+     "type": "p",
+     "text": "Once hadst thou wild dogs in thy cellar: but they changed at last into birds and charming songstresses."
+    },
+    {
+     "type": "p",
+     "text": "Out of thy poisons brewedst thou balsam for thyself; thy cow, affliction, milkedst thou—now drinketh thou the sweet milk of her udder."
+    },
+    {
+     "type": "p",
+     "text": "And nothing evil groweth in thee any longer, unless it be the evil that groweth out of the conflict of thy virtues."
+    },
+    {
+     "type": "p",
+     "text": "My brother, if thou be fortunate, then wilt thou have one virtue and no more: thus goest thou easier over the bridge."
+    },
+    {
+     "type": "p",
+     "text": "Illustrious is it to have many virtues, but a hard lot; and many a one hath gone into the wilderness and killed himself, because he was weary of being the battle and battlefield of virtues."
+    },
+    {
+     "type": "p",
+     "text": "My brother, are war and battle evil? Necessary, however, is the evil; necessary are the envy and the distrust and the back-biting among the virtues."
+    },
+    {
+     "type": "p",
+     "text": "Lo! how each of thy virtues is covetous of the highest place; it wanteth thy whole spirit to be ITS herald, it wanteth thy whole power, in wrath, hatred, and love."
+    },
+    {
+     "type": "p",
+     "text": "Jealous is every virtue of the others, and a dreadful thing is jealousy. Even virtues may succumb by jealousy."
+    },
+    {
+     "type": "p",
+     "text": "He whom the flame of jealousy encompasseth, turneth at last, like the scorpion, the poisoned sting against himself."
+    },
+    {
+     "type": "p",
+     "text": "Ah! my brother, hast thou never seen a virtue backbite and stab itself?"
+    },
+    {
+     "type": "p",
+     "text": "Man is something that hath to be surpassed: and therefore shalt thou love thy virtues,—for thou wilt succumb by them.—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra."
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "part": 0,
+   "number": "VI",
+   "title": "The Pale Criminal",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "Ye do not mean to slay, ye judges and sacrificers, until the animal hath bowed its head? Lo! the pale criminal hath bowed his head: out of his eye speaketh the great contempt."
+    },
+    {
+     "type": "p",
+     "text": "“Mine ego is something which is to be surpassed: mine ego is to me the great contempt of man”: so speaketh it out of that eye."
+    },
+    {
+     "type": "p",
+     "text": "When he judged himself—that was his supreme moment; let not the exalted one relapse again into his low estate!"
+    },
+    {
+     "type": "p",
+     "text": "There is no salvation for him who thus suffereth from himself, unless it be speedy death."
+    },
+    {
+     "type": "p",
+     "text": "Your slaying, ye judges, shall be pity, and not revenge; and in that ye slay, see to it that ye yourselves justify life!"
+    },
+    {
+     "type": "p",
+     "text": "It is not enough that ye should reconcile with him whom ye slay. Let your sorrow be love to the Superman: thus will ye justify your own survival!"
+    },
+    {
+     "type": "p",
+     "text": "“Enemy” shall ye say but not “villain,” “invalid” shall ye say but not “wretch,” “fool” shall ye say but not “sinner.”"
+    },
+    {
+     "type": "p",
+     "text": "And thou, red judge, if thou would say audibly all thou hast done in thought, then would every one cry: “Away with the nastiness and the virulent reptile!”"
+    },
+    {
+     "type": "p",
+     "text": "But one thing is the thought, another thing is the deed, and another thing is the idea of the deed. The wheel of causality doth not roll between them."
+    },
+    {
+     "type": "p",
+     "text": "An idea made this pale man pale. Adequate was he for his deed when he did it, but the idea of it, he could not endure when it was done."
+    },
+    {
+     "type": "p",
+     "text": "Evermore did he now see himself as the doer of one deed. Madness, I call this: the exception reversed itself to the rule in him."
+    },
+    {
+     "type": "p",
+     "text": "The streak of chalk bewitcheth the hen; the stroke he struck bewitched his weak reason. Madness AFTER the deed, I call this."
+    },
+    {
+     "type": "p",
+     "text": "Hearken, ye judges! There is another madness besides, and it is BEFORE the deed. Ah! ye have not gone deep enough into this soul!"
+    },
+    {
+     "type": "p",
+     "text": "Thus speaketh the red judge: “Why did this criminal commit murder? He meant to rob.” I tell you, however, that his soul wanted blood, not booty: he thirsted for the happiness of the knife!"
+    },
+    {
+     "type": "p",
+     "text": "But his weak reason understood not this madness, and it persuaded him. “What matter about blood!” it said; “wishest thou not, at least, to make booty thereby? Or take revenge?”"
+    },
+    {
+     "type": "p",
+     "text": "And he hearkened unto his weak reason: like lead lay its words upon him—thereupon he robbed when he murdered. He did not mean to be ashamed of his madness."
+    },
+    {
+     "type": "p",
+     "text": "And now once more lieth the lead of his guilt upon him, and once more is his weak reason so benumbed, so paralysed, and so dull."
+    },
+    {
+     "type": "p",
+     "text": "Could he only shake his head, then would his burden roll off; but who shaketh that head?"
+    },
+    {
+     "type": "p",
+     "text": "What is this man? A mass of diseases that reach out into the world through the spirit; there they want to get their prey."
+    },
+    {
+     "type": "p",
+     "text": "What is this man? A coil of wild serpents that are seldom at peace among themselves—so they go forth apart and seek prey in the world."
+    },
+    {
+     "type": "p",
+     "text": "Look at that poor body! What it suffered and craved, the poor soul interpreted to itself—it interpreted it as murderous desire, and eagerness for the happiness of the knife."
+    },
+    {
+     "type": "p",
+     "text": "Him who now turneth sick, the evil overtaketh which is now the evil: he seeketh to cause pain with that which causeth him pain. But there have been other ages, and another evil and good."
+    },
+    {
+     "type": "p",
+     "text": "Once was doubt evil, and the will to Self. Then the invalid became a heretic or sorcerer; as heretic or sorcerer he suffered, and sought to cause suffering."
+    },
+    {
+     "type": "p",
+     "text": "But this will not enter your ears; it hurteth your good people, ye tell me. But what doth it matter to me about your good people!"
+    },
+    {
+     "type": "p",
+     "text": "Many things in your good people cause me disgust, and verily, not their evil. I would that they had a madness by which they succumbed, like this pale criminal!"
+    },
+    {
+     "type": "p",
+     "text": "Verily, I would that their madness were called truth, or fidelity, or justice: but they have their virtue in order to live long, and in wretched self-complacency."
+    },
+    {
+     "type": "p",
+     "text": "I am a railing alongside the torrent; whoever is able to grasp me may grasp me! Your crutch, however, I am not.—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra."
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "part": 0,
+   "number": "VII",
+   "title": "Reading and Writing",
+   "blocks": [
+    {
+     "type": "p",
+     "text": "Of all that is written, I love only what a person hath written with his blood. Write with blood, and thou wilt find that blood is spirit."
+    },
+    {
+     "type": "p",
+     "text": "It is no easy task to understand unfamiliar blood; I hate the reading idlers."
+    },
+    {
+     "type": "p",
+     "text": "He who knoweth the reader, doeth nothing more for the reader. Another century of readers—and spirit itself will stink."
+    },
+    {
+     "type": "p",
+     "text": "Every one being allowed to learn to read, ruineth in the long run not only writing but also thinking."
+    },
+    {
+     "type": "p",
+     "text": "Once spirit was God, then it became man, and now it even becometh populace."
+    },
+    {
+     "type": "p",
+     "text": "He that writeth in blood and proverbs doth not want to be read, but learnt by heart."
+    },
+    {
+     "type": "p",
+     "text": "In the mountains the shortest way is from peak to peak, but for that route thou must have long legs. Proverbs should be peaks, and those spoken to should be big and tall."
+    },
+    {
+     "type": "p",
+     "text": "The atmosphere rare and pure, danger near and the spirit full of a joyful wickedness: thus are things well matched."
+    },
+    {
+     "type": "p",
+     "text": "I want to have goblins about me, for I am courageous. The courage which scareth away ghosts, createth for itself goblins—it wanteth to laugh."
+    },
+    {
+     "type": "p",
+     "text": "I no longer feel in common with you; the very cloud which I see beneath me, the blackness and heaviness at which I laugh—that is your thunder-cloud."
+    },
+    {
+     "type": "p",
+     "text": "Ye look aloft when ye long for exaltation; and I look downward because I am exalted."
+    },
+    {
+     "type": "p",
+     "text": "Who among you can at the same time laugh and be exalted?"
+    },
+    {
+     "type": "p",
+     "text": "He who climbeth on the highest mountains, laugheth at all tragic plays and tragic realities."
+    },
+    {
+     "type": "p",
+     "text": "Courageous, unconcerned, scornful, coercive—so wisdom wisheth us; she is a woman, and ever loveth only a warrior."
+    },
+    {
+     "type": "p",
+     "text": "Ye tell me, “Life is hard to bear.” But for what purpose should ye have your pride in the morning and your resignation in the evening?"
+    },
+    {
+     "type": "p",
+     "text": "Life is hard to bear: but do not affect to be so delicate! We are all of us fine sumpter asses and assesses."
+    },
+    {
+     "type": "p",
+     "text": "What have we in common with the rose-bud, which trembleth because a drop of dew hath formed upon it?"
+    },
+    {
+     "type": "p",
+     "text": "It is true we love life; not because we are wont to live, but because we are wont to love."
+    },
+    {
+     "type": "p",
+     "text": "There is always some madness in love. But there is always, also, some method in madness."
+    },
+    {
+     "type": "p",
+     "text": "And to me also, who appreciate life, the butterflies, and soap-bubbles, and whatever is like them amongst us, seem most to enjoy happiness."
+    },
+    {
+     "type": "p",
+     "text": "To see these light, foolish, pretty, lively little sprites flit about—that moveth Zarathustra to tears and songs."
+    },
+    {
+     "type": "p",
+     "text": "I should only believe in a God that would know how to dance."
+    },
+    {
+     "type": "p",
+     "text": "And when I saw my devil, I found him serious, thorough, profound, solemn: he was the spirit of gravity—through him all things fall."
+    },
+    {
+     "type": "p",
+     "text": "Not by wrath, but by laughter, do we slay. Come, let us slay the spirit of gravity!"
+    },
+    {
+     "type": "p",
+     "text": "I learned to walk; since then have I let myself run. I learned to fly; since then I do not need pushing in order to move from a spot."
+    },
+    {
+     "type": "p",
+     "text": "Now am I light, now do I fly; now do I see myself under myself. Now there danceth a God in me.—"
+    },
+    {
+     "type": "p",
+     "text": "Thus spake Zarathustra."
+    }
+   ]
+  }
+ ]
+}

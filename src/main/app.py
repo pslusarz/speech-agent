@@ -41,7 +41,7 @@ from fasthtml.common import (
     sse_message,
 )
 
-from . import asr, demo, samples
+from . import asr, demo
 from .bedrock import raw_client
 from .harness.agent import Agent
 from .harness.trace import Trace, dump
@@ -104,14 +104,9 @@ input[name=msg] { flex:1; padding:.55rem .75rem; }
 #text { max-height:70vh; overflow:auto; font-family:Georgia,serif; line-height:1.6; padding-right:.5rem; }
 #text span[data-s] { cursor:pointer; border-radius:.2rem; }
 #text span.lit { background:#ffe58f; }
-#voice-samples { margin-top:1rem; }
-#voice-samples .row { gap:.5rem; align-items:center; }
-#record, #speak { touch-action:none; user-select:none; margin:0; white-space:nowrap; width:auto; }
-#record.recording, #speak.recording { background:#cf222e; border-color:#cf222e; color:#fff; }
+#speak { touch-action:none; user-select:none; margin:0; white-space:nowrap; width:auto; }
+#speak.recording { background:#cf222e; border-color:#cf222e; color:#fff; }
 #speak-note { color:#57606a; font-size:.85rem; min-height:1.2rem; margin:.3rem 0; }
-#record-note { color:#57606a; font-size:.85rem; min-height:1.2rem; margin:.3rem 0; }
-#samples-list li { font-size:.85rem; margin:.2rem 0; }
-#samples-list audio { height:1.8rem; vertical-align:middle; }
 .debug pre { font-size:.72rem; white-space:pre-wrap; max-height:40vh; overflow:auto; }
 """
 
@@ -157,39 +152,6 @@ def asset(name: str) -> str:
 def bubble(said, call: int = 0):
     who, text = said
     return Div(Span(text, cls="bubble"), cls=f"row {who}", data_call=call or None)
-
-
-def samples_list():
-    from fasthtml.common import Li, Ul
-
-    items = [
-        Li(
-            Audio(src=f"/sample/{x.name}", controls=True, preload="none"),
-            f" {x.seconds:.1f} s",
-            f" - {x.said!r}" if x.said else " - (what was said not given)",
-        )
-        for x in samples.all_samples()
-    ]
-    return Ul(*items, id="samples-list") if items else P("No samples yet.", id="samples-list")
-
-
-def voice_samples():
-    return Details(
-        Summary("Voice samples, for testing speech recognition"),
-        P(
-            "Type what you will say (optional, it lets the test score the transcript), "
-            "then hold the button while you say it. Kept on this machine only.",
-            cls="muted",
-        ),
-        Div(
-            Input(id="said", placeholder="What I will say...", autocomplete="off"),
-            Button("Hold to record", id="record", type="button"),
-            cls="row",
-        ),
-        P("", id="record-note"),
-        samples_list(),
-        id="voice-samples",
-    )
 
 
 def chapter_html(c) -> str:
@@ -245,7 +207,6 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
                             hx_on__after_request="this.reset()",
                         ),
                         P("", id="speak-note"),
-                        voice_samples(),
                         Details(
                             Summary("what the model would be sent now"),
                             Pre("", id="model-view"),
@@ -340,10 +301,10 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
     @rt("/speech", methods=["post"])
     async def speech(audio: UploadFile):
         """The person let go: what they said is their message, as if they had typed it."""
-        data = await audio.read(samples.MAX_BYTES + 1)
+        data = await audio.read(asr.MAX_BYTES + 1)
         try:
-            samples.check(data)
-        except samples.Refused as e:
+            asr.check(data)
+        except asr.Refused as e:
             log.info("speech refused: %s", e)
             return Response(str(e), status_code=400)
         pcm, rate = asr.read_wav_bytes(data)
@@ -418,24 +379,6 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
         player.resume(by="person")
         by_person("resumed")
         return ""
-
-    @rt("/samples", methods=["post"])
-    async def save_sample(audio: UploadFile, said: str = ""):
-        data = await audio.read(samples.MAX_BYTES + 1)
-        try:
-            kept = samples.save(data, said)
-        except samples.Refused as e:
-            log.info("sample refused: %s", e)
-            return Response(str(e), status_code=400)
-        log.info("sample kept: %s, %.1f s, said given: %s", kept.name, kept.seconds, bool(kept.said))
-        return samples_list()
-
-    @rt("/sample/{name}")
-    def sample_audio(request, name: str):
-        p = samples.path(name)
-        if p is None:
-            return Response("no such sample", status_code=404)
-        return wav_response(request, p.read_bytes())
 
     @rt("/log", methods=["post"])
     async def page_log(request):

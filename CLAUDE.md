@@ -5,9 +5,14 @@ in with a question, the agent pauses the reading, answers in its own voice, and 
 reading can resume exactly where the question was asked. The reading is a **player
 tool** the agent drives; the person can drive the same player from the page.
 
-The text is Nietzsche's *Thus Spake Zarathustra* (Thomas Common translation) from
-[books-zarathustra](https://github.com/pslusarz/books-zarathustra), cloned beside this
-repo (`../books-zarathustra/data/book.json`, override with `BOOK_PATH`).
+The text is Nietzsche's *Thus Spake Zarathustra*, in Thomas Common's 1909 translation,
+which is in the public domain.
+- **Bundled:** the Prologue and the first seven chapters are in `data/zarathustra.json`.
+- **The whole book:** `data/book.json` in
+  [books-zarathustra](https://github.com/pslusarz/books-zarathustra). Set `BOOK_PATH`
+  to use it.
+
+The repo is public.
 
 ## Where we are
 
@@ -17,7 +22,9 @@ repo (`../books-zarathustra/data/book.json`, override with `BOOK_PATH`).
   - interruption, by typing or by **press-to-speak**: a "Hold to speak" button whose
     speech is transcribed by Parakeet v2 on the server's CPU (`src/main/asr.py`,
     `/speech/start`, `/speech`);
-  - a Voice samples panel and `scripts/asr_bench.py` for measuring recognition.
+  - `scripts/asr_bench.py`, which measures recognition on a folder of recordings;
+  - a scripted demo mode (`DEMO=1`), and the README GIF recorded with it (see the
+    `recording-demos` skill).
 - **Measured on the user's voice (M3, int8):** 4 of 4 questions transcribed word for
   word, in 0.1 to 0.2 s with 2 threads while Kokoro worked on the same cores.
 - **Next: automatic voice detection**, as a second trigger into the same path. See
@@ -99,8 +106,9 @@ Text input and the button stay.
   which runs the same on the Mac and on Linux. It is not yet benchmarked.
 - **Press-to-speak first, automatic voice detection second.** Both send
   `speech-start` / `speech-end` into one path.
-- **Voice samples are recorded in the app itself** ("Voice samples" panel) and saved to
-  `samples/`, which is git-ignored: they are the user's voice. They feed the benchmark.
+- **The user's voice recordings stay out of the repo.** They live in `samples/`, which
+  git ignores, and `scripts/asr_bench.py` reads them from there. The in-app panel that
+  recorded them has been removed.
 
 See `docs/research/2026-10-29-speech-recognition.md`.
 

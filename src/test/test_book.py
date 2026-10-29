@@ -48,3 +48,11 @@ def test_find_reports_chapter_and_offset_in_reading_order():
     hits = book.find("STAR", limit=10)
     assert hits == [(0, book[0].text.index("star")), (1, book[1].text.index("star"))]
     assert book.find("star", limit=1) == hits[:1]
+
+
+def test_the_chapters_that_ship_with_the_repo_load():
+    book = Book.load()
+    assert book.title == "Thus Spake Zarathustra"
+    assert [c.id for c in book.chapters] == list(range(len(book.chapters)))
+    assert book[0].title == "Zarathustra’s Prologue"
+    assert book[0].text.startswith("When Zarathustra was thirty years old")
