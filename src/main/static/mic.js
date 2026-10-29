@@ -92,9 +92,11 @@ function holdToRecord(button, note, {onPress = () => {}, onDone}) {
   }
 
   async function end() {
-    if (!starting) return;
-    const opened = await starting;
+    // letting go fires both pointerup and lostpointercapture: only the first one ends it
+    const pending = starting;
+    if (!pending) return;
     starting = null;
+    const opened = await pending;
     button.classList.remove('recording');
     if (!opened) return;
     const got = await mic.stop();

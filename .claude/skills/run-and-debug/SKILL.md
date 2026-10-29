@@ -114,6 +114,33 @@ audio, slightly out of step, and every one reported its position.
 (`ReferenceError: hush is not defined` in the page log). Add any new script through
 `asset()`.
 
+**Audio routes must answer byte ranges** (`wav_response` in `app.py`). Without
+`Accept-Ranges` and `206` replies, Chrome cannot seek into a file it has not fully
+buffered: `currentTime = t` silently lands at 0, and resume replays the whole segment
+instead of starting at the sentence. The page log shows it as `audio-seeked` with
+`"at": 0`.
+
+**Releasing a hold fires both `pointerup` and `lostpointercapture`.** `holdToRecord` in
+`mic.js` takes the pending start before awaiting it, so only the first one stops the
+microphone. The second used to close it again, and that recording came out empty.
+
+**The microphone takes 0.4 to 0.8 s to open** after a press (2.5 s in headless
+Chromium). Words said in that gap are lost. Keeping it open between presses would fix
+that, but the browser would show "microphone in use" all the time. The user has not
+decided.
+
+**Re-recording the README GIF** (`docs/demo.gif`):
+1. Run `DEMO=1 LOG_FILE=logs/demo.log uv run uvicorn main.app:app --port 8001`. It uses
+   scripted replies from `src/main/demo.py`, and never touches the user's server or log.
+2. Run `uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py`.
+   Add `--cut-only` to re-cut the last take.
+3. Restart the demo server before each take, since the script's replies are used up.
+4. Check `logs/demo-sheet.png`.
+
+The `hqdn3d` denoise step matters: Playwright records lossy VP8, whose shimmer makes the
+GIF 6.5 MB without it and 2.6 MB with it. Dropping duplicate frames (`mpdecimate`)
+looks smaller but loses frame timing, so do not use it.
+
 **Do not judge an agent's turn as finished by its first reply.** Text written before
 a tool call counts as a reply, while the turn goes on calling tools. In tests, wait on
 the state you care about (`agent.wait_until(lambda: player.state == ...)`), not on

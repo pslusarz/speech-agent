@@ -90,7 +90,7 @@ function highlight() {
   if (span === lit) return;
   lit?.classList.remove('lit');
   span.classList.add('lit');
-  span.scrollIntoView({block: 'center', behavior: 'smooth'});
+  span.scrollIntoView({block: 'nearest', behavior: 'smooth'});
   lit = span;
 }
 requestAnimationFrame(highlight);
