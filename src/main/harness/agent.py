@@ -180,6 +180,7 @@ class Agent:
         on_end=(),
         heard=None,
         on_idle=(),
+        ends_turn=(),
     ):
         self.cli = client if client is not None else raw_client()
         self.model = model
@@ -201,6 +202,9 @@ class Agent:
         self.heard = heard or (lambda call, text: text)
         # told each time the loop has finished with an event and no turn is running
         self.on_idle = list(on_idle)
+        # tools that have the last word: once one has run, the turn is over, since a
+        # further step would have nothing to say and might say something anyway
+        self.ends_turn = set(ends_turn)
         self._calls_made = count(1)
         self._busy = False
         self._interrupting = threading.Event()
@@ -555,6 +559,8 @@ class Agent:
                 ]
                 self._append("user", results, kind="tool_results", question=question)
                 began = len(self.calls) - before == len(uses)
+            if any(u.name in self.ends_turn for u in uses):
+                return
             # it said something and only started background work, so there is nothing
             # to add until that work reports; another step would only say "still waiting"
             if began and node.text.strip():

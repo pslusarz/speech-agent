@@ -45,7 +45,7 @@ from .harness.agent import Agent
 from .harness.trace import Trace, dump
 from .player.book import Book
 from .player.player import Player
-from .player.tools import SP, person_did, status_line, tools
+from .player.tools import ENDS_TURN, SP, person_did, status_line, tools
 from .player.tts import Kokoro
 from .player.voice import Voice
 
@@ -355,6 +355,7 @@ agent = trace.attach(
         on_end=[voice.end],
         heard=voice.heard,
         on_idle=[player.release],
+        ends_turn=ENDS_TURN,
     )
 )
 # a held play or resume waits for the voice to finish and the agent's turn to end, so

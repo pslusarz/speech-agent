@@ -45,6 +45,15 @@ writes about 13 times faster than the voice speaks.
 - `hold` is `voice.busy or agent.busy`. It must include the turn, not just the voice. Otherwise the held play runs in the gap between two model calls of one turn, and the next call's "Enjoy the reading!" pauses the book it just started.
 - `player.release()` runs from the voice's `voice-done` event and from `agent.on_idle`, and acts only once nothing holds it.
 - A cut-in calls `release(cancel=True)`, which drops the held action.
+- **`player_play` and `player_resume` end the turn** (`ENDS_TURN` in `player/tools.py`,
+  passed to the Agent as `ends_turn`). Without this, the harness made one more model
+  call after the tool result, with nothing left to say. Once the model filled that call
+  by writing the person's next message ("Human: who does he meet first…"), and the voice
+  spoke it.
+- **The player notice describes a held action as what is about to happen** ("about to
+  resume", "about to start chapter N"), never as "paused". A tool result saying
+  "playing again" next to a notice saying "paused" is a contradiction, and those invite
+  strange replies.
 
 **6. The page** is `static/player.js`.
 - The agent's chat line is drawn from its voice, word by word, as each word plays. Nothing written but unspoken is shown.

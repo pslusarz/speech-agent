@@ -296,6 +296,10 @@ class Player:
     def status(self) -> dict:
         with self._cv:
             out = dict(state=self.state, by=self.last_by)
+            if self.pending is not None:
+                out.update(held=self.pending[0])
+                if self.pending[0] == "play":
+                    out.update(held_chapter=self.pending[1])
             if self.chapter is None:
                 return out
             c = self.book[self.chapter]
@@ -314,8 +318,6 @@ class Player:
             if self.mark is not None:
                 m0, m1 = c.sentence_at(self.mark)
                 out.update(mark=self.mark, mark_sentence=c.text[m0:m1])
-            if self.pending is not None:
-                out.update(held=self.pending[0])
             return out
 
     def tail(self, chars: int = TAIL_CHARS) -> str:

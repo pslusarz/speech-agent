@@ -151,3 +151,42 @@ def test_resume_before_anything_was_played_is_refused(player):
     a.wait_for("go on", timeout=5)
     assert results(a)[0].startswith("error")
     a.stop()
+
+
+def test_starting_or_resuming_the_book_ends_the_turn(player):
+    from main.player.tools import ENDS_TURN
+
+    player.play(0)
+    player.fill()
+    player.pause()
+    # one reply scripted: a second model call would run the script out and fail
+    s = Script(use("player_resume"))
+    a = Agent(sp=SP, tools=tools(player), client=s, ends_turn=ENDS_TURN)
+    a.post("carry on")
+    assert a.wait_until(lambda: player.state == PLAYING and not a.busy, 5), a.errors
+    assert len(s.requests) == 1 and a.errors == []
+    # the next message still makes a valid request: tool results, then the person
+    s.then(say("He meets an old saint in the forest."))
+    assert a.wait_for("who does he meet first?", timeout=5).text.startswith("He meets")
+    a.stop()
+
+
+def test_a_held_resume_is_described_as_about_to_resume_not_paused(player):
+    player.play(0)
+    player.fill()
+    player.pause()
+    speaking = [True]
+    player.hold = lambda: speaking[0]
+    player.resume()
+    line = status_line(player)
+    assert "about to resume" in line and "paused" not in line
+    speaking[0] = False
+    player.release()
+    assert status_line(player).startswith(f"{NOTICE} The player is playing")
+
+
+def test_a_held_first_play_is_described_as_about_to_start(player):
+    player.hold = lambda: True
+    player.play(1)
+    line = status_line(player)
+    assert line.startswith(f"{NOTICE} The player is about to start chapter 1 'Two'")

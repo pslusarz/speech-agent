@@ -33,6 +33,9 @@ SP = (
     "unless asked: anything you say keeps the book waiting."
 )
 
+# once the book is playing there is nothing left to say, so these end the turn
+ENDS_TURN = ("player_play", "player_resume")
+
 # enough for a passage or two, not for a chapter
 READ_LIMIT = 3000
 FIND_LIMIT = 8
@@ -55,21 +58,35 @@ def _int(description: str, required: bool = False) -> dict:
 def status_line(player: Player) -> str | None:
     """One notice of where the player is, for the agent before each turn."""
     st = player.status()
+    held = st.get("held")
+    if held == "play":
+        c = player.book[st["held_chapter"]]
+        starting = (
+            f"{NOTICE} The player is about to start chapter {c.id} '{c.title}': you asked "
+            "for it, and it starts once you have finished speaking, unless the person cuts in."
+        )
+        if st["state"] == IDLE:
+            return starting
     if st["state"] == IDLE:
         return None
     who = "the person" if st["by"] == "person" else "you"
+    # a resume held for the voice is the state the agent asked for, so say that, not
+    # "paused" - a tool result and a notice that disagree invite strange replies
+    state = (
+        "about to resume: you asked for it, and it resumes once you have finished "
+        "speaking, unless the person cuts in. It is"
+        if held == "resume"
+        else f"{st['state']} (last changed by {who}),"
+    )
     lines = [
-        f"{NOTICE} The player is {st['state']} (last changed by {who}), in chapter "
+        f"{NOTICE} The player is {state} in chapter "
         f"{st['chapter']} '{st['title']}', paragraph {st['paragraph']}, at offset "
         f"{st['offset']} of {st['length']}, {st['elapsed']} into this reading, with "
         f"{st['ready']} of audio prepared ahead.",
         f"Sentence being heard: {st['sentence']!r}",
     ]
-    if "held" in st:
-        lines.append(
-            f"Your {st['held']} is waiting until you have finished speaking, and will "
-            "happen then unless the person cuts in."
-        )
+    if held == "play":
+        lines.insert(0, starting)
     if "mark" in st:
         lines.append(
             f"When the person last spoke, they were hearing: {st['mark_sentence']!r} "
