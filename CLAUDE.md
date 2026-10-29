@@ -11,9 +11,16 @@ repo (`../books-zarathustra/data/book.json`, override with `BOOK_PATH`).
 
 ## Where we are
 
-- **Done:** the player tool; the agent's replies streamed and spoken; interruption.
-  For now the person interrupts by **typing**.
-- **Next: the person's speech.** Speech in, so the person interrupts by talking. See
+- **Done:**
+  - the player tool;
+  - the agent's replies, streamed and spoken;
+  - interruption, by typing or by **press-to-speak**: a "Hold to speak" button whose
+    speech is transcribed by Parakeet v2 on the server's CPU (`src/main/asr.py`,
+    `/speech/start`, `/speech`);
+  - a Voice samples panel and `scripts/asr_bench.py` for measuring recognition.
+- **Measured on the user's voice (M3, int8):** 4 of 4 questions transcribed word for
+  word, in 0.1 to 0.2 s with 2 threads while Kokoro worked on the same cores.
+- **Next: automatic voice detection**, as a second trigger into the same path. See
   "Next step" below.
 
 Work in small steps: one capability at a time, tested, then shown to the user.
@@ -75,16 +82,29 @@ Work in small steps: one capability at a time, tested, then shown to the user.
   - Instrument everything so problems can be read from the log.
   - Never stop or restart the server without asking: it ends the user's session (see the run-and-debug skill).
 
-## Next step: the person's speech
+## Next step: automatic voice detection
 
-Goal: the person interrupts by talking, not typing. Text input stays.
+Press-to-speak works; voice detection is to trigger the same thing without a button.
+Text input and the button stay.
 
 **Where it plugs in:**
 - `cut_in()` in `app.py` is the integration point. It stops the voice, interrupts the stream, truncates history to what was heard, and notes the agent.
 - A confirmed spoken barge-in should call it.
 - Then `player.heard_message()` and `agent.post(transcript)`, exactly as `/say` does.
 
-**The research doc recommends:**
+**Decided with the user (2026-10-29):**
+- **English only for now.** Kokoro has no Polish, so the conversation is English too.
+- **Recognition runs on the server, on CPU.** The target deployment is Railway, which
+  has no GPUs. The candidate is Parakeet TDT 0.6B v2 as int8 ONNX through `sherpa-onnx`,
+  which runs the same on the Mac and on Linux. It is not yet benchmarked.
+- **Press-to-speak first, automatic voice detection second.** Both send
+  `speech-start` / `speech-end` into one path.
+- **Voice samples are recorded in the app itself** ("Voice samples" panel) and saved to
+  `samples/`, which is git-ignored: they are the user's voice. They feed the benchmark.
+
+See `docs/research/2026-10-29-speech-recognition.md`.
+
+**The first research doc also recommends:**
 - **Detect speech in the browser** with Silero VAD (`@ricky0123/vad-web`).
 - **Pause, then confirm:**
   - On speech start, pause the output at once.
@@ -93,6 +113,7 @@ Goal: the person interrupts by talking, not typing. Text input stays.
 - **Echo:** Chromium's echo cancellation historically ignores Web Audio output.
   - We already play through `<audio>` elements, which is the documented workaround. Keep it that way.
   - Headphones avoid echo altogether.
-- **Streaming speech-to-text** is still undecided. Check the research doc and ask the user before choosing a provider.
+- **Streaming speech-to-text** is not needed for press-to-speak. For automatic detection,
+  `nemotron-speech-streaming-en-0.6b` (CPU int8) gives partial words every 80 to 160 ms.
 
 The interruption design these all build on is in the `interrupts` skill.

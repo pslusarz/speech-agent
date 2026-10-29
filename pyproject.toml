@@ -12,8 +12,10 @@ license-files = ["LICENSE"]
 dependencies = [
     "anthropic[bedrock]>=0.40.0,<1.0",
     "en-core-web-sm",
+    "huggingface-hub>=2.3.0",
     "kokoro>=0.9.4",
     "python-fasthtml>=0.12.0",
+    "sherpa-onnx>=2.0.1",
 ]
 
 [tool.pytest.ini_options]

@@ -5,6 +5,9 @@
 // ignored, so audio made for an old reading never plays.
 
 const REPORT_MS = 1000;
+// which open page this is: only the one the server names plays the audio
+const PAGE = Math.random().toString(36).slice(2, 10);
+let active = true;
 const audio = document.getElementById('audio');
 let session = 0, chapter = null, segs = [], cur = -1, wanted = null, last = false;
 let starts = [], spans = [], lit = null;
@@ -13,7 +16,7 @@ let starts = [], spans = [], lit = null;
 const LOG_FLUSH_MS = 500;
 let pending = [];
 function log(kind, data) {
-  pending.push({kind, data: {...data, at: +audio.currentTime.toFixed(2), cur, session, paused: audio.paused}});
+  pending.push({page: PAGE, kind, data: {...data, at: +audio.currentTime.toFixed(2), cur, session, paused: audio.paused}});
 }
 setInterval(() => {
   if (!pending.length) return;
@@ -33,7 +36,7 @@ const post = (url, data) => fetch(url, {
 });
 
 function report() {
-  if (cur >= 0) post('/player/report', {session, index: cur, t: audio.currentTime});
+  if (cur >= 0 && active) post('/player/report', {session, index: cur, t: audio.currentTime, page: PAGE});
 }
 
 async function showChapter(id) {
@@ -131,7 +134,7 @@ function vplay() {
   });
 }
 function vreport(ended) {
-  if (vcur) post('/voice/report', {id: vcur.id, t: voiceEl.currentTime, playing: voiceEl.paused ? 0 : 1, ended: ended ? 1 : 0});
+  if (vcur && active) post('/voice/report', {id: vcur.id, t: voiceEl.currentTime, playing: voiceEl.paused ? 0 : 1, ended: ended ? 1 : 0, page: PAGE});
 }
 voiceEl.addEventListener('playing', () => vreport(false));
 voiceEl.addEventListener('ended', () => {
@@ -145,6 +148,25 @@ voiceEl.addEventListener('ended', () => {
 for (const ev of ['play', 'pause', 'ended', 'waiting', 'error'])
   voiceEl.addEventListener(ev, () => log('voice-' + ev, {id: vcur && vcur.id, at: +voiceEl.currentTime.toFixed(2)}));
 setInterval(() => { if (vcur && !voiceEl.paused) vreport(false); }, VOICE_REPORT_MS);
+
+// another page has taken over the audio: stop everything here, and say how to get it back
+function goQuiet() {
+  audio.pause(); voiceEl.pause(); vq = []; vcur = null; wanted = null;
+  const note = document.getElementById('player-note');
+  note.innerHTML = 'The audio is playing in another tab or window. ';
+  const here = document.createElement('a');
+  here.href = '#'; here.textContent = 'Play it here instead';
+  here.onclick = ev => { ev.preventDefault(); location.reload(); };
+  note.append(here);
+}
+
+// the person pressed to speak: silence both voices on the page at once, ahead of the
+// server's own stop and pause, which follow
+function hush() {
+  if (!voiceEl.paused) voiceEl.pause();
+  if (!audio.paused) audio.pause();
+  log('hush', {});
+}
 
 const handlers = {
   sync(e) {
@@ -176,11 +198,20 @@ const handlers = {
   error(e) { setStatus('The player failed: ' + e.message); },
 };
 
-const es = new EventSource('/player/events');
+const es = new EventSource('/player/events?page=' + PAGE);
 es.addEventListener('open', () => log('stream-open', {}));
 es.addEventListener('error', () => log('stream-error', {state: es.readyState}));
 es.addEventListener('player', m => {
   const e = JSON.parse(m.data);
+  if (e.kind === 'active') {
+    const was = active;
+    active = e.page === PAGE;
+    log('active', {mine: active, was});
+    if (!active) goQuiet();
+    return;
+  }
+  // a quiet page plays nothing: another page has the audio
+  if (!active) return;
   const {words, segments, ...brief} = e;
   // the voice is not tied to a reading, so its events are not filtered by session
   const own = /^(voice-|held|released)/.test(e.kind);
