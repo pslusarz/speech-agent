@@ -5,8 +5,9 @@ while the person keeps talking to it. Built on the exp10 harness from
 [async-agent](../async-agent): a flat transcript, plus current state shown before every
 turn and never stored.
 
-Phase 1: the person types questions; the agent answers in text. Speech in and out of
-the conversation comes next. Research behind the choices:
+The person types questions; the agent answers aloud, streaming, in the book's voice,
+and can be cut off mid-reply. The person's own speech comes next. Context for the next
+agent: [CLAUDE.md](CLAUDE.md) and the skills in `.claude/skills/`. Research behind the choices:
 [docs/research/2026-10-28-voice-stack-research.md](docs/research/2026-10-28-voice-stack-research.md).
 
     uv sync
@@ -28,6 +29,7 @@ download from Hugging Face on first run; espeak-ng comes as a library with
 | `src/main/player/book.py` | chapters as text, with paragraph and sentence spans; every position is a character offset into one chapter |
 | `src/main/player/tts.py` | Kokoro, and a silent engine for tests; each returns WAV and the time of every word |
 | `src/main/player/player.py` | the player: segments of a few sentences, AHEAD seconds made ahead, more once fewer than REFILL_AT are left |
+| `src/main/player/voice.py` | the agent's voice: streamed text chunked for Kokoro, parts the page plays and reports, what was heard |
 | `src/main/player/tools.py` | the player and book as the agent's tools, the notice it sees each turn, the note it gets when the person clicks |
 | `src/main/app.py`, `static/player.js` | the page: chat on the left, the player and the chapter on the right, the word being heard lit up |
 

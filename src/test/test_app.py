@@ -209,3 +209,14 @@ def test_a_play_held_for_the_voice_also_waits_for_the_turn_to_end(setup):
     # and nothing paused it after it started
     kinds = [e["kind"] for e in player.events]
     assert "pause" not in kinds[kinds.index("session"):]
+
+
+def test_the_page_log_reaches_the_server_log(setup, caplog):
+    client, *_ = setup
+    entries = [dict(kind="audio-play", data=dict(at=1.5)), dict(kind="voice-ended", data={})]
+    with caplog.at_level("INFO", logger="speech.page"):
+        r = client.post("/log", json=dict(entries=entries))
+    assert r.status_code == 200
+    assert [rec.getMessage().split(" ")[0] for rec in caplog.records if rec.name == "speech.page"] == [
+        "audio-play", "voice-ended"
+    ]

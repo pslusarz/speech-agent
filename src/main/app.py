@@ -307,9 +307,10 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
     @rt("/log", methods=["post"])
     async def page_log(request):
         """What the page saw: audio element events, server events received, errors."""
+        # fasthtml refuses a JSON body that is not an object, so the list comes wrapped
         try:
-            entries = json.loads(await request.body())
-        except ValueError:
+            entries = json.loads(await request.body()).get("entries", [])
+        except (ValueError, AttributeError):
             return Response("not json", status_code=400)
         for e in entries if isinstance(entries, list) else []:
             if isinstance(e, dict):

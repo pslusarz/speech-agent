@@ -18,7 +18,7 @@ function log(kind, data) {
 setInterval(() => {
   if (!pending.length) return;
   const batch = pending; pending = [];
-  fetch('/log', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(batch)});
+  fetch('/log', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({entries: batch})});
 }, LOG_FLUSH_MS);
 window.addEventListener('error', e => log('js-error', {message: e.message, line: e.lineno}));
 window.addEventListener('unhandledrejection', e => log('js-rejection', {reason: String(e.reason)}));
