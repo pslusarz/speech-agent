@@ -18,7 +18,10 @@ LLM_CACHE=off uv run uvicorn main.app:app --port 8000     # http://127.0.0.1:800
 
 - Run it in the background. It is ready when the log says `speech.app INFO ready`, about 10 to 15 s after starting.
 - Startup loads the book and Kokoro. The first run ever downloads about 330 MB of Kokoro weights.
-- Claude runs on Bedrock with the `development` AWS profile. If the profile's credentials have expired, every model call fails.
+- Claude runs on Bedrock with the `development` AWS profile. Credentials are read at
+  startup, so an expired SSO session makes the server exit at once with
+  `UnauthorizedSSOTokenError`. The user has to run `aws sso login --profile development`
+  themselves, since it opens their browser. Then start the server again.
 
 **Never stop or restart the server without asking the user.** They may be in the
 middle of testing, and a server that disappears looks to them like the app locked up.
