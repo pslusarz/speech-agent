@@ -19,14 +19,31 @@ from .conftest import Script, say, use
 from .test_player import PARAS, Clock
 
 
+class Heard:
+    """A recogniser that hears whatever the test says it will."""
+
+    def __init__(self, *a, **kw):
+        self.next = ""
+        self.heard: list[int] = []
+
+    def transcribe(self, pcm, rate=16000):
+        from main.asr import Transcript
+
+        self.heard.append(len(pcm))
+        return Transcript(self.next, (), len(pcm) / rate, 0.01)
+
+
 @pytest.fixture
 def setup(monkeypatch, tmp_path):
     # main.app builds Kokoro and a Bedrock client when imported; stand both in
     import main.player.tts as tts
     import main.bedrock as bedrock
 
+    import main.asr as asr
+
     monkeypatch.setenv("LOG_FILE", str(tmp_path / "test.log"))
     monkeypatch.setattr(tts, "Kokoro", Silent)
+    monkeypatch.setattr(asr, "Parakeet", Heard)
     monkeypatch.setattr(bedrock, "raw_client", lambda: Script())
     monkeypatch.setattr(Book, "load", classmethod(lambda cls: Book("t", [chapter(0, "One", PARAS)])))
     sys.modules.pop("main.app", None)
@@ -48,8 +65,10 @@ def setup(monkeypatch, tmp_path):
             on_text=[voice.text], on_end=[voice.end], heard=voice.heard,
         )
     )
-    client = TestClient(app_module.make_app(agent, player, trace, voice))
+    ears = Heard()
+    client = TestClient(app_module.make_app(agent, player, trace, voice, ears))
     client.voice = voice
+    client.ears = ears
     yield client, player, agent, s
     agent.stop()
     voice.close()
@@ -68,7 +87,7 @@ def test_the_player_script_is_served(setup):
     client, *_ = setup
     r = client.get("/static/player.js")
     assert r.status_code == 200
-    assert "EventSource('/player/events')" in r.text
+    assert "EventSource('/player/events?page=' + PAGE)" in r.text
 
 
 def test_the_buttons_drive_the_player_and_tell_the_agent(setup):
@@ -213,10 +232,153 @@ def test_a_play_held_for_the_voice_also_waits_for_the_turn_to_end(setup):
 
 def test_the_page_log_reaches_the_server_log(setup, caplog):
     client, *_ = setup
-    entries = [dict(kind="audio-play", data=dict(at=1.5)), dict(kind="voice-ended", data={})]
+    entries = [dict(page="tab1", kind="audio-play", data=dict(at=1.5)),
+               dict(page="tab1", kind="voice-ended", data={})]
     with caplog.at_level("INFO", logger="speech.page"):
         r = client.post("/log", json=dict(entries=entries))
     assert r.status_code == 200
-    assert [rec.getMessage().split(" ")[0] for rec in caplog.records if rec.name == "speech.page"] == [
-        "audio-play", "voice-ended"
-    ]
+    lines = [rec.getMessage().split(" ")[:2] for rec in caplog.records if rec.name == "speech.page"]
+    assert lines == [["tab1", "audio-play"], ["tab1", "voice-ended"]]
+
+
+def test_a_recorded_sample_is_kept_listed_and_played_back(setup, tmp_path, monkeypatch):
+    from main import samples
+
+    from .test_samples import tone
+
+    client, *_ = setup
+    monkeypatch.setattr(samples, "SAMPLES", tmp_path / "samples")
+    r = client.post("/samples", files=dict(audio=("sample.wav", tone(1.5), "audio/wav")),
+                    data=dict(said="who does he meet first?"))
+    assert r.status_code == 200 and "who does he meet first?" in r.text
+    name = samples.all_samples()[0].name
+    assert f"/sample/{name}" in client.get("/").text
+    played = client.get(f"/sample/{name}")
+    assert played.headers["content-type"] == "audio/wav" and played.content[:4] == b"RIFF"
+
+
+def test_an_unusable_recording_is_refused_with_the_reason(setup, tmp_path, monkeypatch):
+    from main import samples
+
+    from .test_samples import tone
+
+    client, *_ = setup
+    monkeypatch.setattr(samples, "SAMPLES", tmp_path / "samples")
+    r = client.post("/samples", files=dict(audio=("s.wav", tone(1.0, rate=44100), "audio/wav")))
+    assert r.status_code == 400 and "16 kHz mono" in r.text
+    assert client.get("/sample/..%2F..%2Fpyproject").status_code == 404
+
+
+def test_the_microphone_scripts_are_served(setup):
+    client, *_ = setup
+    for name in ("mic.js", "capture-worklet.js"):
+        assert client.get(f"/static/{name}").status_code == 200
+
+
+def test_the_page_asks_for_each_script_by_its_version(setup):
+    import re
+
+    client, *_ = setup
+    page = client.get("/").text
+    for name in ("player.js", "mic.js", "capture-worklet.js"):
+        url = re.search(rf'/static/{re.escape(name)}\?v=\d+', page)
+        assert url, f"{name} is not versioned"
+        assert client.get(url.group()).status_code == 200
+
+
+def speak_into(client, text: str, seconds: float = 1.5):
+    from .test_samples import tone
+
+    client.ears.next = text
+    return client.post("/speech", files=dict(audio=("speech.wav", tone(seconds), "audio/wav")))
+
+
+def test_pressing_to_speak_cuts_in_and_pauses_the_book_where_the_person_was(setup):
+    client, player, agent, s = setup
+    player.play(0)
+    player.fill()
+    player.clock.now += 4.0
+    assert client.post("/speech/start").status_code == 200
+    assert player.state == "paused" and player.last_by == "person"
+    assert player.book[0].sentence_at(player.mark)[0] == 51
+    note = [e.text for e in agent.log if e.kind == "note"][-1]
+    assert "pressed to speak" in note
+
+
+def test_pressing_to_speak_over_the_agent_stops_its_voice_and_cuts_its_reply(setup):
+    client, player, agent, s = setup
+    voice = client.voice
+    s.then(say("Zarathustra went up, alone and gladly, into the mountains. Then he came down."))
+    agent.wait_for("why the mountains?", timeout=5)
+    assert agent.wait_until(lambda: not agent.busy, 5)
+    while voice.pump():
+        pass
+    client.post("/voice/report", data=dict(id=voice.parts[0].id, t=0.5, playing=0))
+    client.post("/speech/start")
+    assert not voice.busy
+    # the reply is cut to what was heard; only the note says what it went on to say
+    replies = [e.text for e in agent.log if e.role == "assistant"]
+    assert replies and "came down" not in replies[0]
+
+
+def test_releasing_posts_what_was_heard_as_the_person_s_message(setup):
+    client, player, agent, s = setup
+    client.post("/speech/start")
+    s.then(say("He meets an old saint in the forest."))
+    r = speak_into(client, "Who does he meet first?")
+    assert r.status_code == 200 and r.json()["text"] == "Who does he meet first?"
+    assert agent.wait_until(lambda: len(s.requests) == 1, 5)
+    assert ("user", "Who does he meet first?") in agent.transcript()
+    assert client.ears.heard == [24000]
+
+
+def test_speech_with_no_words_in_it_posts_nothing(setup):
+    client, player, agent, s = setup
+    client.post("/speech/start")
+    r = speak_into(client, "   ")
+    assert r.status_code == 200 and r.json()["text"] == ""
+    assert not [e for e in agent.log if e.kind == "said"]
+
+
+def test_unusable_speech_audio_is_refused_with_the_reason(setup):
+    from .test_samples import tone
+
+    client, *_ = setup
+    r = client.post("/speech", files=dict(audio=("s.wav", tone(1.0, rate=44100), "audio/wav")))
+    assert r.status_code == 400 and "16 kHz mono" in r.text
+
+
+def test_the_newest_page_plays_and_the_others_are_told_to_stay_quiet(setup):
+    client, player, *_ = setup
+    player.claim("page-a")
+    player.claim("page-b")
+    actives = [e for e in player.events if e["kind"] == "active"]
+    assert [e["page"] for e in actives] == ["page-a", "page-b"]
+    assert player.active_page == "page-b"
+
+
+def test_only_the_playing_page_moves_the_book_or_the_voice(setup):
+    client, player, agent, s = setup
+    voice = client.voice
+    player.play(0)
+    player.fill()
+    player.claim("page-b")
+    client.post("/player/report", data=dict(session=player.session, index=1, t=2.0, page="page-a"))
+    assert player.position() == (0, 0.0), "a quiet page's report is ignored"
+    client.post("/player/report", data=dict(session=player.session, index=1, t=2.0, page="page-b"))
+    assert player.position() == (1, 2.0)
+    voice.text(1, "Hello there, and welcome to the book.")
+    voice.end(1, None)
+    voice.pump()
+    part = voice.parts[0]
+    client.post("/voice/report", data=dict(id=part.id, t=part.duration, ended=1, page="page-a"))
+    assert not part.ended
+    client.post("/voice/report", data=dict(id=part.id, t=part.duration, ended=1, page="page-b"))
+    assert part.ended
+
+
+def test_a_page_that_does_not_say_which_it_is_gets_no_events(setup):
+    client, player, *_ = setup
+    r = client.get("/player/events")
+    assert r.status_code == 409
+    assert player.active_page is None

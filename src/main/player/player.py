@@ -96,6 +96,9 @@ class Player:
         # made for the book: the agent's own voice is speaking
         self.hold = lambda: False
         self.pending: tuple | None = None
+        # the one page that plays the audio; any other open page stays quiet, or they
+        # would all play it at once, a little out of step
+        self.active_page: str | None = None
         self.events: list[dict] = []
         self.errors: list[Exception] = []
         self._ids = count(1)
@@ -233,6 +236,17 @@ class Player:
             if self.state == PLAYING:
                 self.mark = self.offset()
                 log.info("person spoke while playing: mark=%d", self.mark)
+
+    def claim(self, page: str):
+        """The page the person opened last plays from now on."""
+        with self._cv:
+            if page and page != self.active_page:
+                self.active_page = page
+                self._emit("active", page=page)
+
+    def heard_from(self, page: str | None) -> bool:
+        """Whether a report comes from the page that is playing."""
+        return self.active_page is None or page == self.active_page
 
     def report(self, session: int, index: int, t: float):
         """The page says where playback is. A report from an old session is ignored."""

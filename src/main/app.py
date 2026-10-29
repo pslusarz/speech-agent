@@ -35,11 +35,13 @@ from fasthtml.common import (
     Style,
     Summary,
     Titled,
+    UploadFile,
     fast_app,
     serve,
     sse_message,
 )
 
+from . import asr, samples
 from .bedrock import raw_client
 from .harness.agent import Agent
 from .harness.trace import Trace, dump
@@ -102,6 +104,14 @@ input[name=msg] { flex:1; padding:.55rem .75rem; }
 #text { max-height:70vh; overflow:auto; font-family:Georgia,serif; line-height:1.6; padding-right:.5rem; }
 #text span[data-s] { cursor:pointer; border-radius:.2rem; }
 #text span.lit { background:#ffe58f; }
+#voice-samples { margin-top:1rem; }
+#voice-samples .row { gap:.5rem; align-items:center; }
+#record, #speak { touch-action:none; user-select:none; margin:0; white-space:nowrap; width:auto; }
+#record.recording, #speak.recording { background:#cf222e; border-color:#cf222e; color:#fff; }
+#speak-note { color:#57606a; font-size:.85rem; min-height:1.2rem; margin:.3rem 0; }
+#record-note { color:#57606a; font-size:.85rem; min-height:1.2rem; margin:.3rem 0; }
+#samples-list li { font-size:.85rem; margin:.2rem 0; }
+#samples-list audio { height:1.8rem; vertical-align:middle; }
 .debug pre { font-size:.72rem; white-space:pre-wrap; max-height:40vh; overflow:auto; }
 """
 
@@ -114,9 +124,48 @@ chat.addEventListener('said', m => document.getElementById('transcript')
 """
 
 
+def asset(name: str) -> str:
+    """A static file's URL, versioned by when it last changed, so a browser never pairs
+    a fresh script with a stale copy of another one it depends on."""
+    return f"/static/{name}?v={int((STATIC / name).stat().st_mtime)}"
+
+
 def bubble(said, call: int = 0):
     who, text = said
     return Div(Span(text, cls="bubble"), cls=f"row {who}", data_call=call or None)
+
+
+def samples_list():
+    from fasthtml.common import Li, Ul
+
+    items = [
+        Li(
+            Audio(src=f"/sample/{x.name}", controls=True, preload="none"),
+            f" {x.seconds:.1f} s",
+            f" - {x.said!r}" if x.said else " - (what was said not given)",
+        )
+        for x in samples.all_samples()
+    ]
+    return Ul(*items, id="samples-list") if items else P("No samples yet.", id="samples-list")
+
+
+def voice_samples():
+    return Details(
+        Summary("Voice samples, for testing speech recognition"),
+        P(
+            "Type what you will say (optional, it lets the test score the transcript), "
+            "then hold the button while you say it. Kept on this machine only.",
+            cls="muted",
+        ),
+        Div(
+            Input(id="said", placeholder="What I will say...", autocomplete="off"),
+            Button("Hold to record", id="record", type="button"),
+            cls="row",
+        ),
+        P("", id="record-note"),
+        samples_list(),
+        id="voice-samples",
+    )
 
 
 def chapter_html(c) -> str:
@@ -131,7 +180,7 @@ def chapter_html(c) -> str:
     return "".join(out)
 
 
-def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
+def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
     # fasthtml serves any path ending in a static extension from static_path itself,
     # ahead of every route, so /static/player.js is src/main/static/player.js
     app, rt = fast_app(pico=True, hdrs=(Style(CSS),), static_path=str(STATIC.parent))
@@ -166,10 +215,13 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
                             Input(name="msg", placeholder="Ask something, or ask it to read...",
                                   autofocus=True, autocomplete="off"),
                             Button("Send"),
+                            Button("Hold to speak", id="speak", type="button", cls="secondary"),
                             hx_post="/say",
                             hx_swap="none",
                             hx_on__after_request="this.reset()",
                         ),
+                        P("", id="speak-note"),
+                        voice_samples(),
                         Details(
                             Summary("what the model would be sent now"),
                             Pre("", id="model-view"),
@@ -190,7 +242,9 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
                 )
             ),
             Script(f"const AFTER = {trace.version};\n{STREAM}"),
-            Script(src="/static/player.js"),
+            Script(f"const WORKLET = {json.dumps(asset('capture-worklet.js'))};"),
+            Script(src=asset("player.js")),
+            Script(src=asset("mic.js")),
         )
 
     @rt("/events")
@@ -247,6 +301,34 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
             agent.post(msg.strip())
         return ""
 
+    @rt("/speech/start", methods=["post"])
+    def speech_start():
+        """The person pressed to speak: what they heard stops here, not when they let go."""
+        playing = player.state == "playing"
+        log.info("person pressed to speak (player %s, voice busy %s, agent busy %s)",
+                 player.state, voice.busy, agent.busy)
+        player.heard_message()
+        cut_in()
+        if playing and player.pause(by="person"):
+            agent.notify(person_did(player, "pressed to speak, which paused"))
+        return ""
+
+    @rt("/speech", methods=["post"])
+    async def speech(audio: UploadFile):
+        """The person let go: what they said is their message, as if they had typed it."""
+        data = await audio.read(samples.MAX_BYTES + 1)
+        try:
+            samples.check(data)
+        except samples.Refused as e:
+            log.info("speech refused: %s", e)
+            return Response(str(e), status_code=400)
+        pcm, rate = asr.read_wav_bytes(data)
+        heard = await asyncio.to_thread(ears.transcribe, pcm, rate)
+        log.info("heard %.1fs of speech in %.2fs: %r", heard.seconds, heard.took, heard.text)
+        if heard.text.strip():
+            agent.post(heard.text.strip())
+        return dict(text=heard.text.strip(), seconds=round(heard.seconds, 2), took=round(heard.took, 2))
+
     @rt("/voice/stop", methods=["post"])
     def voice_stop():
         log.info("person pressed stop speaking")
@@ -254,8 +336,9 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
         return ""
 
     @rt("/voice/report", methods=["post"])
-    def voice_report(id: int, t: float, playing: bool = False, ended: bool = False):
-        voice.report(id, max(0.0, t), playing, ended)
+    def voice_report(id: int, t: float, playing: bool = False, ended: bool = False, page: str = ""):
+        if player.heard_from(page):
+            voice.report(id, max(0.0, t), playing, ended)
         return ""
 
     @rt("/voice/{id}")
@@ -266,8 +349,16 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
         return Response(part.wav, media_type="audio/wav")
 
     @rt("/player/events")
-    async def player_events():
+    async def player_events(page: str = ""):
+        # a page without an id runs a script from before pages had ids; it would ignore
+        # being told to go quiet and play along with the others, so it gets nothing
+        if not page:
+            log.warning("refused the event stream of a page running an old script: reload it")
+            return Response("reload this page", status_code=409)
+
         async def stream():
+            # the page opened last plays; the others hear so, and go quiet
+            player.claim(page[:64])
             snap = player.snapshot()
             yield f"event: player\ndata: {json.dumps(snap)}\n\n"
             seen = snap["n"]
@@ -304,6 +395,24 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
         by_person("resumed")
         return ""
 
+    @rt("/samples", methods=["post"])
+    async def save_sample(audio: UploadFile, said: str = ""):
+        data = await audio.read(samples.MAX_BYTES + 1)
+        try:
+            kept = samples.save(data, said)
+        except samples.Refused as e:
+            log.info("sample refused: %s", e)
+            return Response(str(e), status_code=400)
+        log.info("sample kept: %s, %.1f s, said given: %s", kept.name, kept.seconds, bool(kept.said))
+        return samples_list()
+
+    @rt("/sample/{name}")
+    def sample_audio(name: str):
+        p = samples.path(name)
+        if p is None:
+            return Response("no such sample", status_code=404)
+        return Response(p.read_bytes(), media_type="audio/wav")
+
     @rt("/log", methods=["post"])
     async def page_log(request):
         """What the page saw: audio element events, server events received, errors."""
@@ -314,12 +423,14 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
             return Response("not json", status_code=400)
         for e in entries if isinstance(entries, list) else []:
             if isinstance(e, dict):
-                client_log.info("%s %s", str(e.get("kind", "?"))[:40], json.dumps(e.get("data"))[:LOG_BODY])
+                client_log.info("%s %s %s", str(e.get("page", "?"))[:8], str(e.get("kind", "?"))[:40],
+                                json.dumps(e.get("data"))[:LOG_BODY])
         return ""
 
     @rt("/player/report", methods=["post"])
-    def report(session: int, index: int, t: float):
-        player.report(session, index, max(0.0, t))
+    def report(session: int, index: int, t: float, page: str = ""):
+        if player.heard_from(page):
+            player.report(session, index, max(0.0, t))
         return ""
 
     @rt("/audio/{id}")
@@ -341,6 +452,7 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice):
 setup_logging()
 log.info("starting: loading the book and Kokoro; log at %s", LOG_FILE)
 engine = Kokoro()
+ears = asr.Parakeet()
 player = Player(Book.load(), engine)
 voice = Voice(player, engine)
 trace = log_steps(Trace())
@@ -361,7 +473,7 @@ agent = trace.attach(
 # a held play or resume waits for the voice to finish and the agent's turn to end, so
 # words written after it in the same turn cannot pause the book it has just started
 player.hold = lambda: voice.busy or agent.busy
-app = make_app(agent, player, trace, voice)
+app = make_app(agent, player, trace, voice, ears)
 log.info("ready")
 
 if __name__ == "__main__":

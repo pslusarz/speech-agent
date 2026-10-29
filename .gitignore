@@ -48,3 +48,6 @@ htmlcov/
 
 # Kokoro audio generated at runtime
 audio_cache/
+
+# the user's voice recordings: personal data, never committed
+samples/

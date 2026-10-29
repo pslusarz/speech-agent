@@ -19,9 +19,19 @@ LLM_CACHE=off uv run uvicorn main.app:app --port 8000     # http://127.0.0.1:800
 - Run it in the background. It is ready when the log says `speech.app INFO ready`, about 10 to 15 s after starting.
 - Startup loads the book and Kokoro. The first run ever downloads about 330 MB of Kokoro weights.
 - Claude runs on Bedrock with the `development` AWS profile. Credentials are read at
-  startup, so an expired SSO session makes the server exit at once with
-  `UnauthorizedSSOTokenError`. The user has to run `aws sso login --profile development`
-  themselves, since it opens their browser. Then start the server again.
+  startup, so an expired SSO session makes the server exit at once, ending its output
+  with `botocore.exceptions.UnauthorizedSSOTokenError: The SSO session associated with
+  this profile has expired`. It expires overnight.
+  - **Do not try to log in yourself.** The browser sign-in never reaches the user from
+    your shell. Ask them to run `aws sso login --profile development`, wait for them to
+    say it is done, then start the server.
+  - **Do not work around it** by making the server start without credentials. The user
+    decided against that.
+  - To check before starting: `aws configure export-credentials --profile development
+    >/dev/null && echo ok`.
+  - The user's profiles share one SSO sign-in, so logging in to any of them (staging,
+    say) refreshes `development` too. Run the check rather than asking which one they
+    used.
 
 **Never stop or restart the server without asking the user.** They may be in the
 middle of testing, and a server that disappears looks to them like the app locked up.
@@ -90,6 +100,19 @@ tail -n +$n logs/speech-agent.log | grep -E "speech.app|queued part|voice-stop|h
 400) before the route runs.
 - The page's logger now sends `{"entries": [...]}`.
 - Until that fix, no `speech.page` lines reached the log at all.
+
+**Several open pages make a "choir".** Every open tab or window used to play the same
+audio, slightly out of step, and every one reported its position.
+- Now the page opened most recently plays (`player.claim`, the `active` event).
+- The others go quiet with a "Play it here instead" link.
+- Reports from a quiet page are ignored.
+- Page log lines start with the page's id, so several pages show up in the log as
+  several ids.
+
+**Browser caching:** scripts are loaded as `/static/x.js?v=<mtime>` (`asset()` in
+`app.py`). A fresh `mic.js` once ran beside a cached old `player.js`
+(`ReferenceError: hush is not defined` in the page log). Add any new script through
+`asset()`.
 
 **Do not judge an agent's turn as finished by its first reply.** Text written before
 a tool call counts as a reply, while the turn goes on calling tools. In tests, wait on
