@@ -37,7 +37,7 @@ class Speech:
 
 
 class Engine(Protocol):
-    def speak(self, text: str) -> Speech: ...
+    def speak(self, text: str, voice: str | None = None) -> Speech: ...
 
 
 def wav(samples: np.ndarray, rate: int = RATE) -> bytes:
@@ -80,11 +80,11 @@ class Kokoro:
         self.pipeline = KPipeline(lang_code="a", repo_id=REPO)
         self._lock = threading.Lock()
 
-    def speak(self, text: str) -> Speech:
+    def speak(self, text: str, voice: str | None = None) -> Speech:
         chunks, words, elapsed, at = [], [], 0.0, 0
         with self._lock:
             # a long passage comes back in several pieces, each timed from its own start
-            for r in self.pipeline(text, voice=self.voice):
+            for r in self.pipeline(text, voice=voice or self.voice):
                 audio = r.audio.numpy() if hasattr(r.audio, "numpy") else np.asarray(r.audio)
                 found, at = align(text, r.tokens or [], elapsed, at)
                 words += found
@@ -101,7 +101,7 @@ class Silent:
         self.per_char = per_char
         self.spoken: list[str] = []
 
-    def speak(self, text: str) -> Speech:
+    def speak(self, text: str, voice: str | None = None) -> Speech:
         self.spoken.append(text)
         words, i = [], 0
         for w in text.split():

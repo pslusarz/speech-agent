@@ -1,5 +1,7 @@
 import copy
 import threading
+import time
+from types import SimpleNamespace
 from itertools import count
 
 from anthropic.types import Message
@@ -39,6 +41,7 @@ class Script:
     def __init__(self, *replies):
         self.replies = list(replies)
         self.requests: list[dict] = []
+        self._holds: dict[int, "Hold"] = {}
         self._lock = threading.Lock()
 
     @property
@@ -70,6 +73,80 @@ class Script:
                 usage=dict(input_tokens=1, output_tokens=1),
             )
         )
+
+    def stream(self, **kw):
+        with self._lock:
+            hold = self._holds.pop(len(self.requests) + 1, None)
+        return Streamed(self.create(**kw), hold)
+
+    def hold(self, request: int, after: int) -> "Hold":
+        """Stop the stream for `request` after `after` pieces until released or closed."""
+        h = Hold(after)
+        with self._lock:
+            self._holds[request] = h
+        return h
+
+
+class Hold:
+    def __init__(self, after: int):
+        self.after = after
+        self.reached = threading.Event()
+        self.released = threading.Event()
+
+
+def event(text: str):
+    """A text delta, shaped like the SDK's stream event."""
+    return SimpleNamespace(
+        type="content_block_delta", delta=SimpleNamespace(type="text_delta", text=text)
+    )
+
+
+class Streamed:
+    """What messages.stream() gives back: events carrying the text a few characters at a
+    time, then the message.
+
+    With a hold, it stops partway as a slow model would, until the test releases it.
+    """
+
+    PIECE = 4
+
+    def __init__(self, message: Message, hold: Hold | None = None):
+        self.message = message
+        self.hold = hold
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def __iter__(self):
+        sent = 0
+        for b in self.message.content:
+            if b.type != "text":
+                continue
+            for i in range(0, len(b.text), self.PIECE):
+                if self.hold and sent == self.hold.after:
+                    self.hold.reached.set()
+                    self.hold.released.wait(5)
+                sent += 1
+                yield event(b.text[i : i + self.PIECE])
+
+    def get_final_message(self) -> Message:
+        return self.message
+
+
+def cut(agent, hold: Hold) -> bool:
+    """Interrupt while the stream is held, then let the next event through, as it would
+    arrive from a real model a moment later."""
+    out = {}
+    t = threading.Thread(target=lambda: out.setdefault("ok", agent.interrupt(timeout=5)))
+    t.start()
+    while not agent._interrupting.is_set() and t.is_alive():
+        time.sleep(0.005)
+    hold.released.set()
+    t.join(5)
+    return out.get("ok", False)
 
 
 def last_text(request: dict) -> str:
