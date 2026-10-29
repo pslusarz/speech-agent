@@ -241,34 +241,6 @@ def test_the_page_log_reaches_the_server_log(setup, caplog):
     assert lines == [["tab1", "audio-play"], ["tab1", "voice-ended"]]
 
 
-def test_a_recorded_sample_is_kept_listed_and_played_back(setup, tmp_path, monkeypatch):
-    from main import samples
-
-    from .test_samples import tone
-
-    client, *_ = setup
-    monkeypatch.setattr(samples, "SAMPLES", tmp_path / "samples")
-    r = client.post("/samples", files=dict(audio=("sample.wav", tone(1.5), "audio/wav")),
-                    data=dict(said="who does he meet first?"))
-    assert r.status_code == 200 and "who does he meet first?" in r.text
-    name = samples.all_samples()[0].name
-    assert f"/sample/{name}" in client.get("/").text
-    played = client.get(f"/sample/{name}")
-    assert played.headers["content-type"] == "audio/wav" and played.content[:4] == b"RIFF"
-
-
-def test_an_unusable_recording_is_refused_with_the_reason(setup, tmp_path, monkeypatch):
-    from main import samples
-
-    from .test_samples import tone
-
-    client, *_ = setup
-    monkeypatch.setattr(samples, "SAMPLES", tmp_path / "samples")
-    r = client.post("/samples", files=dict(audio=("s.wav", tone(1.0, rate=44100), "audio/wav")))
-    assert r.status_code == 400 and "16 kHz mono" in r.text
-    assert client.get("/sample/..%2F..%2Fpyproject").status_code == 404
-
-
 def test_the_microphone_scripts_are_served(setup):
     client, *_ = setup
     for name in ("mic.js", "capture-worklet.js"):
@@ -287,7 +259,7 @@ def test_the_page_asks_for_each_script_by_its_version(setup):
 
 
 def speak_into(client, text: str, seconds: float = 1.5):
-    from .test_samples import tone
+    from .test_asr import tone
 
     client.ears.next = text
     return client.post("/speech", files=dict(audio=("speech.wav", tone(seconds), "audio/wav")))
@@ -341,7 +313,7 @@ def test_speech_with_no_words_in_it_posts_nothing(setup):
 
 
 def test_unusable_speech_audio_is_refused_with_the_reason(setup):
-    from .test_samples import tone
+    from .test_asr import tone
 
     client, *_ = setup
     r = client.post("/speech", files=dict(audio=("s.wav", tone(1.0, rate=44100), "audio/wav")))

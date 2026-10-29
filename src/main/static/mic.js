@@ -66,9 +66,9 @@ const mic = (() => {
   return {start, stop, get recording() { return ctx !== null; }};
 })();
 
-// Hold a button to record, let go to finish. Shared by press-to-speak and the samples
-// panel. The pointer is captured while held, so drifting off the button does not end
-// it, and a press too short to record anything says so instead of vanishing.
+// Hold a button to record, let go to finish. The pointer is captured while held, so
+// drifting off the button does not end it, and a press too short to record anything
+// says so instead of vanishing.
 function holdToRecord(button, note, {onPress = () => {}, onDone}) {
   let starting = null;
 
@@ -113,30 +113,6 @@ function holdToRecord(button, note, {onPress = () => {}, onDone}) {
   button.addEventListener('pointerdown', begin);
   for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) button.addEventListener(ev, end);
 }
-
-// the Voice samples panel: kept as a sample, with what the person said they said
-(() => {
-  const button = document.getElementById('record');
-  if (!button) return;
-  const note = document.getElementById('record-note');
-  const said = document.getElementById('said');
-  holdToRecord(button, note, {
-    async onDone(got) {
-      const form = new FormData();
-      form.append('audio', got.wav, 'sample.wav');
-      form.append('said', said.value);
-      note.textContent = 'Saving...';
-      const res = await fetch('/samples', {method: 'POST', body: form});
-      if (res.ok) {
-        document.getElementById('samples-list').outerHTML = await res.text();
-        note.textContent = `Kept ${got.seconds.toFixed(1)} s.`;
-        said.value = '';
-      } else {
-        note.textContent = 'Not kept: ' + await res.text();
-      }
-    },
-  });
-})();
 
 // press to speak: pressing cuts in at once, letting go sends what was said
 (() => {

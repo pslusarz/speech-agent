@@ -129,17 +129,7 @@ Chromium). Words said in that gap are lost. Keeping it open between presses woul
 that, but the browser would show "microphone in use" all the time. The user has not
 decided.
 
-**Re-recording the README GIF** (`docs/demo.gif`):
-1. Run `DEMO=1 LOG_FILE=logs/demo.log uv run uvicorn main.app:app --port 8001`. It uses
-   scripted replies from `src/main/demo.py`, and never touches the user's server or log.
-2. Run `uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py`.
-   Add `--cut-only` to re-cut the last take.
-3. Restart the demo server before each take, since the script's replies are used up.
-4. Check `logs/demo-sheet.png`.
-
-The `hqdn3d` denoise step matters: Playwright records lossy VP8, whose shimmer makes the
-GIF 6.5 MB without it and 2.6 MB with it. Dropping duplicate frames (`mpdecimate`)
-looks smaller but loses frame timing, so do not use it.
+**Recording a demo** has its own skill, `recording-demos`.
 
 **Do not judge an agent's turn as finished by its first reply.** Text written before
 a tool call counts as a reply, while the turn goes on calling tools. In tests, wait on

@@ -1,12 +1,13 @@
-"""How fast and how accurate Parakeet is on the recorded voice samples.
+"""How fast and how accurate Parakeet is on recordings of someone's voice.
 
-    uv run python scripts/asr_bench.py
+    uv run python scripts/asr_bench.py [folder]
 
-For each sample in samples/ (recorded in the app's Voice samples panel), and for the
-model's own test clip, it transcribes with 1, 2 and 4 threads - roughly what a small
-server's vCPUs allow - then again with 2 threads while Kokoro makes book audio on the
-same cores, as it would on the server. Where the person typed what they said, it gives
-the word error rate against that.
+Each `name.wav` in the folder (16 kHz mono 16-bit), and the model's own test clip, is
+transcribed with 1, 2 and 4 threads - roughly what a small server's vCPUs allow - then
+again with 2 threads while Kokoro makes book audio on the same cores, as it would on
+the server. Where a `name.txt` beside it says what was said, it gives the word error
+rate against that. The folder defaults to samples/, which git ignores: recordings of a
+voice are personal data.
 """
 
 import re
@@ -19,8 +20,9 @@ from huggingface_hub import hf_hub_download
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from main import samples  # noqa: E402
 from main.asr import REPO, Parakeet, read_wav  # noqa: E402
+
+FOLDER = Path(__file__).resolve().parents[1] / "samples"
 
 THREADS = (1, 2, 4)
 BUSY_THREADS = 2
@@ -41,8 +43,11 @@ def wer(said: str, heard: str) -> float:
     return d[len(b)] / max(1, len(a))
 
 
-def clips() -> list[tuple[str, Path, str]]:
-    out = [(s.name, samples.path(s.name), s.said) for s in samples.all_samples()]
+def clips(folder: Path) -> list[tuple[str, Path, str]]:
+    out = []
+    for w in sorted(folder.glob("*.wav")) if folder.is_dir() else []:
+        txt = w.with_suffix(".txt")
+        out.append((w.stem, w, txt.read_text().strip() if txt.is_file() else ""))
     out.append(("model test clip", Path(hf_hub_download(REPO, "test_wavs/0.wav")), ""))
     return out
 
@@ -57,8 +62,9 @@ def busy_with_kokoro(stop: threading.Event):
 
 
 def main():
-    todo = clips()
-    print(f"{len(todo) - 1} recorded sample(s), plus the model's test clip\n")
+    folder = Path(sys.argv[1]) if len(sys.argv) > 1 else FOLDER
+    todo = clips(folder)
+    print(f"{len(todo) - 1} recording(s) in {folder}, plus the model's test clip\n")
     results: dict[str, dict] = {name: {} for name, _, _ in todo}
     for n in THREADS:
         p = Parakeet(threads=n)

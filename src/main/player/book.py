@@ -12,11 +12,9 @@ from bisect import bisect_right
 from dataclasses import dataclass
 from pathlib import Path
 
+# the first chapters ship with the repo; BOOK_PATH points at the whole book
 BOOK = Path(
-    os.getenv(
-        "BOOK_PATH",
-        Path(__file__).resolve().parents[4] / "books-zarathustra" / "data" / "book.json",
-    )
+    os.getenv("BOOK_PATH", Path(__file__).resolve().parents[3] / "data" / "zarathustra.json")
 )
 # section numbers ("1", "2") are layout, not something to read aloud
 READ = ("p", "verse")
