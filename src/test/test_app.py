@@ -382,3 +382,21 @@ def test_a_page_that_does_not_say_which_it_is_gets_no_events(setup):
     r = client.get("/player/events")
     assert r.status_code == 409
     assert player.active_page is None
+
+
+def test_book_audio_answers_byte_ranges_so_the_browser_can_seek(setup):
+    client, player, *_ = setup
+    player.play(0)
+    player.fill()
+    seg = player.segments[0]
+    whole = client.get(f"/audio/{seg.id}")
+    assert whole.status_code == 200 and whole.headers["accept-ranges"] == "bytes"
+    part = client.get(f"/audio/{seg.id}", headers={"Range": "bytes=10-19"})
+    assert part.status_code == 206 and part.content == seg.wav[10:20]
+    assert part.headers["content-range"] == f"bytes 10-19/{len(seg.wav)}"
+    tail = client.get(f"/audio/{seg.id}", headers={"Range": "bytes=-5"})
+    assert tail.status_code == 206 and tail.content == seg.wav[-5:]
+    rest = client.get(f"/audio/{seg.id}", headers={"Range": "bytes=40-"})
+    assert rest.content == seg.wav[40:]
+    beyond = client.get(f"/audio/{seg.id}", headers={"Range": f"bytes={len(seg.wav) + 1}-"})
+    assert beyond.status_code == 416

@@ -41,7 +41,7 @@ from fasthtml.common import (
     sse_message,
 )
 
-from . import asr, samples
+from . import asr, demo, samples
 from .bedrock import raw_client
 from .harness.agent import Agent
 from .harness.trace import Trace, dump
@@ -122,6 +122,30 @@ const chat = new EventSource('/events?after=' + AFTER);
 chat.addEventListener('said', m => document.getElementById('transcript')
   .append(document.createRange().createContextualFragment(m.data)));
 """
+
+
+RANGE = re.compile(r"bytes=(\d*)-(\d*)$")
+
+
+def wav_response(request, data: bytes) -> Response:
+    """Audio the browser can seek in. Chrome jumps into the middle of a file only if the
+    server answers byte ranges; without them a seek silently lands back at 0."""
+    head = {"Accept-Ranges": "bytes", "Cache-Control": "no-cache"}
+    m = RANGE.match(request.headers.get("range", "").strip())
+    if not m or not (m.group(1) or m.group(2)):
+        return Response(data, media_type="audio/wav", headers=head)
+    size = len(data)
+    if m.group(1):
+        start, end = int(m.group(1)), int(m.group(2) or size - 1)
+    else:
+        start, end = max(0, size - int(m.group(2))), size - 1
+    if start >= size or start > end:
+        return Response(b"", status_code=416, headers={**head, "Content-Range": f"bytes */{size}"})
+    end = min(end, size - 1)
+    return Response(
+        data[start : end + 1], status_code=206, media_type="audio/wav",
+        headers={**head, "Content-Range": f"bytes {start}-{end}/{size}"},
+    )
 
 
 def asset(name: str) -> str:
@@ -342,11 +366,11 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
         return ""
 
     @rt("/voice/{id}")
-    def voice_audio(id: int):
+    def voice_audio(request, id: int):
         part = voice.part(id)
         if part is None:
             return Response("gone", status_code=404)
-        return Response(part.wav, media_type="audio/wav")
+        return wav_response(request, part.wav)
 
     @rt("/player/events")
     async def player_events(page: str = ""):
@@ -407,11 +431,11 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
         return samples_list()
 
     @rt("/sample/{name}")
-    def sample_audio(name: str):
+    def sample_audio(request, name: str):
         p = samples.path(name)
         if p is None:
             return Response("no such sample", status_code=404)
-        return Response(p.read_bytes(), media_type="audio/wav")
+        return wav_response(request, p.read_bytes())
 
     @rt("/log", methods=["post"])
     async def page_log(request):
@@ -434,11 +458,11 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
         return ""
 
     @rt("/audio/{id}")
-    def audio(id: int):
+    def audio(request, id: int):
         seg = player.segment(id)
         if seg is None:
             return Response("gone", status_code=404)
-        return Response(seg.wav, media_type="audio/wav")
+        return wav_response(request, seg.wav)
 
     @rt("/chapter/{id}")
     def chapter(id: int):
@@ -450,7 +474,9 @@ def make_app(agent: Agent, player: Player, trace: Trace, voice: Voice, ears):
 
 
 setup_logging()
-log.info("starting: loading the book and Kokoro; log at %s", LOG_FILE)
+# DEMO answers from a script instead of Bedrock, so a recording is the same every take
+DEMO = bool(os.getenv("DEMO"))
+log.info("starting%s: loading the book and Kokoro; log at %s", " in demo mode" if DEMO else "", LOG_FILE)
 engine = Kokoro()
 ears = asr.Parakeet()
 player = Player(Book.load(), engine)
@@ -461,7 +487,7 @@ agent = trace.attach(
         sp=SP,
         tools=tools(player),
         maxtok=1024,
-        client=trace.client(raw_client()),
+        client=trace.client(demo.Scripted() if DEMO else raw_client()),
         notices=[lambda: status_line(player)],
         on_text=[voice.text],
         on_end=[voice.end],
